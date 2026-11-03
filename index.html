@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RetroOS 1998 - Security Auth</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #050b05;
+            color: #33ff33;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-shadow: 0 0 5px #00ff00;
+        }
+
+        /* Ефект ретро-монітора з ЕЛТ (CRT) */
+        .crt-container {
+            position: relative;
+            width: 90%;
+            max-width: 680px;
+            min-height: 440px;
+            background: #001100;
+            border: 18px solid #2b2b2b;
+            border-radius: 20px;
+            box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 255, 0, 0.2);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .crt-container::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        /* Стиль ретро-кнопок */
+        .retro-btn {
+            background: #002200;
+            color: #33ff33;
+            border: 2px solid #33ff33;
+            padding: 14px 28px;
+            font-size: 18px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #005500;
+            transition: all 0.1s ease;
+            text-transform: uppercase;
+        }
+
+        .retro-btn:hover {
+            background: #33ff33;
+            color: #001100;
+            box-shadow: 3px 3px 0px #00aa00;
+        }
+
+        .retro-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #00aa00;
+        }
+
+        /* Блок завантаження */
+        .loader-box {
+            display: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .log-line {
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            border: 2px solid #33ff33;
+            height: 24px;
+            margin-top: 20px;
+            padding: 2px;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #33ff33;
+            transition: width 0.2s linear;
+        }
+
+        /* Форма авторизації */
+        .login-box {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: #000;
+            border: 2px solid #33ff33;
+            color: #33ff33;
+            font-family: inherit;
+            font-size: 18px;
+            padding: 10px;
+            outline: none;
+        }
+
+        .hint-box {
+            margin-top: 15px;
+            font-size: 13px;
+            color: #88ff88;
+            border: 1px dashed #33ff33;
+            padding: 10px;
+            display: none;
+        }
+
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% { opacity: 0; }
+        }
+
+        .error-msg {
+            color: #ff3333;
+            text-shadow: 0 0 5px #ff0000;
+            margin-top: 10px;
+            display: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crt-container">
+        <!-- Крок 1: Головне меню -->
+        <div id="startScreen">
+            <h1>TERMINAL v4.1 (1998)</h1>
+            <button class="retro-btn" onclick="startBootSequence()">ПОЧАТИ КВЕСТ</button>
+        </div>
+
+        <!-- Крок 2: Завантаження (5 секунд) -->
+        <div id="loaderScreen" class="loader-box">
+            <div id="logArea"></div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Крок 3: Форма авторизації -->
+        <div id="loginScreen" class="login-box">
+            <h2>СИСТЕМА ЗАБЛОКОВАНА <span class="blink">_</span></h2>
+            <p style="font-size: 12px; margin-bottom: 20px; color: #66cc66;">Введіть ім'я користувача для доступу:</p>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="username">USERNAME></label>
+                    <input type="text" id="username" autocomplete="off" autofocus placeholder="Введіть нік...">
+                </div>
+                <button type="submit" class="retro-btn" style="width: 100%;">УВІЙТИ</button>
+            </form>
+
+            <p id="errorMsg" class="error-msg">❌ ПОМИЛКА ДОСТУПУ: НЕВІРНИЙ НІК</p>
+
+            <button class="retro-btn" onclick="toggleHint()" style="margin-top: 15px; font-size: 12px; padding: 6px 12px;">ПІДКАЗКА</button>
+            
+            <div id="hintBox" class="hint-box">
+                <p>🔑 <strong>Шифровка системи:</strong></p>
+                <p>Зашифрований нік: <span style="letter-spacing: 3px; font-weight: bold;">"Eveefl"</span></p>
+                <p style="font-size: 11px; margin-top: 5px; color: #66aa66;">(Підказка: Змісти кожну літеру на 1 крок назад в англійському алфавіті E->D, v->u...)</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Звукові ефекти через Web Audio API
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playBeep(freq = 440, duration = 0.05) {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = freq;
+                gain.gain.value = 0.03;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        // Запуск 5-секундної розгрузки
+        function startBootSequence() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            playBeep(800, 0.1);
+
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('loaderScreen').style.display = 'block';
+
+            const logs = [
+                "BIOS Date 04/12/98 11:24:19 Ver: 08.00.02",
+                "CPU: Intel Pentium II at 233 MHz",
+                "Checking RAM: 64MB OK",
+                "Loading System Drivers...",
+                "Mounting HDD0: DISK_C...",
+                "Initializing Security System...",
+                "System Ready. Awaiting User Auth."
+            ];
+
+            const logArea = document.getElementById('logArea');
+            const progressFill = document.getElementById('progressFill');
+            
+            let currentLog = 0;
+            const totalDuration = 5000; // 5 секунд
+            const stepTime = totalDuration / logs.length;
+
+            const interval = setInterval(() => {
+                if (currentLog < logs.length) {
+                    const p = document.createElement('div');
+                    p.className = 'log-line';
+                    p.innerText = '> ' + logs[currentLog];
+                    logArea.appendChild(p);
+                    playBeep(300 + currentLog * 50, 0.03);
+
+                    currentLog++;
+                    progressFill.style.width = (currentLog / logs.length * 100) + '%';
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('loaderScreen').style.display = 'none';
+                        document.getElementById('loginScreen').style.display = 'block';
+                        playBeep(1000, 0.15);
+                    }, 500);
+                }
+            }, stepTime);
+        }
+
+        // Перевірка введеного ніка
+        function handleLogin(event) {
+            event.preventDefault();
+            const val = document.getElementById('username').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+
+            if (val.toLowerCase() === 'dundik') {
+                playBeep(1200, 0.2);
+                alert("УСПІШНА АВТОРИЗАЦІЯ! Ласкаво просимо, Dundik.");
+                // Наступний крок чи перехід на level2.html:
+                // window.location.href = "level2.html";
+            } else {
+                playBeep(150, 0.3);
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // Показ/приховання підказки
+        function toggleHint() {
+            playBeep(600, 0.05);
+            const box = document.getElementById('hintBox');
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+    </script>
+</body>
+</html>
