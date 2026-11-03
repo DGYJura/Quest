@@ -20,11 +20,9 @@
             position: relative;
         }
 
-        /* ═══ ТАЙМЕР (top-right) ═══ */
         .timer-box {
             position: fixed;
-            top: 15px;
-            right: 15px;
+            top: 15px; right: 15px;
             background: #c0c0c0;
             border-top: 2px solid #ffffff;
             border-left: 2px solid #ffffff;
@@ -52,11 +50,9 @@
             50% { opacity: 0.6; }
         }
 
-        /* ═══ СЧЁТЧИК (top-left) ═══ */
         .score-box {
             position: fixed;
-            top: 15px;
-            left: 15px;
+            top: 15px; left: 15px;
             background: #c0c0c0;
             border-top: 2px solid #ffffff;
             border-left: 2px solid #ffffff;
@@ -71,7 +67,6 @@
             box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
         }
 
-        /* ═══ ЦЕНТРАЛЬНОЕ ОКНО ═══ */
         .center-window {
             position: fixed;
             top: 50%;
@@ -134,9 +129,7 @@
             color: #000080;
         }
 
-        .win-body p {
-            margin: 8px 0;
-        }
+        .win-body p { margin: 8px 0; }
 
         .win-btn {
             background: #c0c0c0;
@@ -160,13 +153,8 @@
             border-bottom: 2px solid #ffffff;
         }
 
-        .win-btn.primary {
-            color: #008000;
-        }
-
-        .win-btn.danger {
-            color: #800000;
-        }
+        .win-btn.primary { color: #008000; }
+        .win-btn.danger { color: #800000; }
 
         .btn-row {
             display: flex;
@@ -176,7 +164,6 @@
             flex-wrap: wrap;
         }
 
-        /* ═══ ВИРУС ═══ */
         .virus {
             position: fixed;
             font-size: 44px;
@@ -187,9 +174,7 @@
             filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.6));
         }
 
-        .virus:hover {
-            transform: scale(1.15);
-        }
+        .virus:hover { transform: scale(1.15); }
 
         @keyframes popIn {
             from { transform: scale(0); opacity: 0; }
@@ -205,15 +190,8 @@
             pointer-events: none;
         }
 
-        .success-text {
-            color: #008000;
-            font-weight: bold;
-        }
-
-        .fail-text {
-            color: #cc0000;
-            font-weight: bold;
-        }
+        .success-text { color: #008000; font-weight: bold; }
+        .fail-text { color: #cc0000; font-weight: bold; }
 
         .code-reward {
             background: #000080;
@@ -229,25 +207,16 @@
             box-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
         }
 
-        .instruction-list {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-
-        .instruction-list li {
-            margin: 6px 0;
-        }
+        .instruction-list { padding-left: 20px; margin: 10px 0; }
+        .instruction-list li { margin: 6px 0; }
     </style>
 </head>
 <body>
 
-    <!-- ═══ ТАЙМЕР ═══ -->
     <div class="timer-box" id="timerBox">03:00</div>
-
-    <!-- ═══ СЧЁТЧИК ═══ -->
     <div class="score-box" id="scoreBox">0 / 20</div>
 
-    <!-- ═══ БРИФИНГ ═══ -->
+    <!-- БРИФИНГ -->
     <div class="center-window" id="briefingWindow">
         <div class="win-title">
             <span>🎯 Секретная миссия #B15</span>
@@ -274,18 +243,17 @@
         </div>
     </div>
 
-    <!-- ═══ РЕЗУЛЬТАТ ═══ -->
+    <!-- РЕЗУЛЬТАТ / УЖЕ ПРОЙДЕНО -->
     <div class="center-window" id="resultWindow" style="display: none;">
         <div class="win-title" id="resultTitle">Загрузка...</div>
         <div class="win-body" id="resultBody"></div>
     </div>
 
     <script>
-        // ═══ НАСТРОЙКИ ═══
-        const TOTAL_TIME = 180;          // 3 минуты = 180 секунд
-        const TARGET_SCORE = 20;         // сколько вирусов нужно обезвредить
-        const SPAWN_DELAY = 700;         // как часто появляются новые вирусы (мс)
-        const VIRUS_LIFETIME = 2200;     // сколько висит вирус до исчезновения (мс)
+        const TOTAL_TIME = 180;
+        const TARGET_SCORE = 20;
+        const SPAWN_DELAY = 700;
+        const VIRUS_LIFETIME = 2200;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -315,6 +283,45 @@
             window.location.href = 'desktop.html';
         }
 
+        // ═══ ПРОВЕРКА: МИССИЯ УЖЕ ПРОЙДЕНА? ═══
+        function checkAlreadyCompleted() {
+            let done = false;
+            try {
+                done = localStorage.getItem('missionCompleted') === 'true';
+            } catch(e) {}
+
+            if (done) {
+                showCompletedWindow();
+            }
+        }
+
+        function showCompletedWindow() {
+            document.getElementById('briefingWindow').style.display = 'none';
+            document.getElementById('timerBox').style.display = 'none';
+            document.getElementById('scoreBox').style.display = 'none';
+
+            const resultWindow = document.getElementById('resultWindow');
+            const titleEl = document.getElementById('resultTitle');
+            const bodyEl = document.getElementById('resultBody');
+
+            titleEl.textContent = '✅ Миссия уже выполнена';
+            bodyEl.innerHTML = `
+                <h2 style="color: #008000;">🏆 МИССИЯ УЖЕ ПРОЙДЕНА</h2>
+                <p>Ты уже обезвредил все вирусы и спас систему!</p>
+                <p class="success-text">✓ Твой код активирован:</p>
+                <div class="code-reward">MISSION_ACCOMPLISHED</div>
+                <p style="font-size: 11px; color: #555; text-align: center;">
+                    <i>Проверь разделы "Друзья" и "Сообщения" в BlackNet — тебя там ждут</i>
+                </p>
+                <div class="btn-row">
+                    <button class="win-btn" onclick="startMission()">Пройти заново</button>
+                    <button class="win-btn primary" onclick="goBack()">На рабочий стол</button>
+                </div>
+            `;
+            resultWindow.style.display = 'block';
+            playSound(800, 0.1);
+        }
+
         function startMission() {
             document.getElementById('briefingWindow').style.display = 'none';
             document.getElementById('resultWindow').style.display = 'none';
@@ -338,7 +345,6 @@
                 }
             }, 1000);
 
-            // Небольшая задержка перед первым вирусом
             setTimeout(() => {
                 if (running) scheduleSpawn();
             }, 800);
@@ -356,11 +362,9 @@
             const virus = document.createElement('div');
             virus.className = 'virus';
 
-            // Разные вирусы
             const types = ['🦠', '👾', '💀', '☣️', '🧬', '⚠️'];
             virus.textContent = types[Math.floor(Math.random() * types.length)];
 
-            // Позиция (с отступами чтобы не перекрывать UI)
             const padTop = 95;
             const padBottom = 40;
             const padSides = 60;
@@ -387,7 +391,6 @@
             document.body.appendChild(virus);
             activeViruses.add(virus);
 
-            // Через VIRUS_LIFETIME вирус исчезает если не успели кликнуть
             setTimeout(() => {
                 if (virus.parentNode && !virus.classList.contains('dead')) {
                     virus.style.transition = 'opacity 0.3s';
@@ -422,7 +425,6 @@
             clearInterval(timerInterval);
             clearTimeout(spawnTimeout);
 
-            // Убираем все вирусы
             activeViruses.forEach(v => v.remove());
             activeViruses.clear();
 
@@ -436,7 +438,6 @@
             if (success) {
                 playSound(1500, 0.4, 'sine');
 
-                // Отмечаем миссию как выполненную
                 try {
                     localStorage.setItem('missionCompleted', 'true');
                 } catch(e) {}
@@ -449,7 +450,7 @@
                     <p class="success-text">✓ Новая информация разблокирована в твоём профиле.</p>
                     <div class="code-reward">MISSION_ACCOMPLISHED</div>
                     <p style="font-size: 11px; color: #555; text-align: center;">
-                        <i>Скоро эта информация тебе пригодится...</i>
+                        <i>В BlackNet разблокированы разделы "Друзья" и "Сообщения"</i>
                     </p>
                     <div class="btn-row">
                         <button class="win-btn primary" onclick="goBack()">Вернуться на рабочий стол</button>
@@ -482,12 +483,8 @@
             startMission();
         }
 
-        // Закрытие по Esc
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !running) {
-                // Ничего — окно имеет кнопки
-            }
-        });
+        // Автозапуск
+        checkAlreadyCompleted();
     </script>
 </body>
 </html>
