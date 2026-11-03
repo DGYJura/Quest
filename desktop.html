@@ -237,6 +237,44 @@
             color: #333; line-height: 1.8;
         }
         .reset-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 18px; }
+
+        /* ═══ 📁 Мои документы — фото ═══ */
+        .photo-modal {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.92);
+            z-index: 10500; justify-content: center; align-items: center;
+            flex-direction: column; cursor: pointer; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .photo-modal img {
+            max-width: 90vw; max-height: 82vh;
+            border: 5px solid #fff; box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+            animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .photo-modal p {
+            color: #fff; margin-top: 25px;
+            font-family: 'Courier New', monospace; font-size: 12px;
+            letter-spacing: 1px; opacity: 0.7;
+        }
+
+        /* ═══ ⚙️ Настройки — вкладки ═══ */
+        .settings-tab {
+            padding: 9px 14px; font-size: 12px; cursor: pointer;
+            color: #333; border-left: 3px solid transparent;
+            transition: all 0.1s;
+        }
+        .settings-tab:hover { background: #e8e8e8; color: #000; }
+        .settings-tab.active {
+            background: #fff; border-left: 3px solid #000080;
+            font-weight: bold; color: #000080;
+        }
     </style>
 </head>
 <body class="loading">
@@ -275,6 +313,11 @@
             <span>BlackNet</span>
         </div>
 
+        <div class="icon" onclick="openWindow('myDocsWindow')">
+            <div class="icon-img">📁</div>
+            <span>Мои<br>документы</span>
+        </div>
+
         <div class="icon" onclick="openWindow('networkWindow')">
             <div class="icon-img">🌐</div>
             <span>Сетевое<br>окружение</span>
@@ -283,6 +326,11 @@
         <div class="icon" onclick="openWindow('trashWindow')">
             <div class="icon-img">🗑️</div>
             <span>Корзина</span>
+        </div>
+
+        <div class="icon" onclick="openWindow('settingsWindow')">
+            <div class="icon-img">⚙️</div>
+            <span>Настройки</span>
         </div>
 
         <div class="icon" id="missionIcon" onclick="openMission()" style="display: none;">
@@ -321,6 +369,69 @@
             <p style="color: #cc0000;">⚠️ Обнаружена попытка взлома</p>
             <p style="color: #cc0000;">&nbsp;&nbsp;&nbsp;Рекомендуется проверить BlackNet</p>
         </div>
+    </div>
+
+    <!-- 📁 Мои документы -->
+    <div class="window" id="myDocsWindow" style="top: 90px; left: 250px; width: 540px; height: 460px;">
+        <div class="window-header" onmousedown="dragMouseDown(event, 'myDocsWindow')">
+            <span>📁 Мои документы</span>
+            <div class="close-btn" onclick="closeWindow('myDocsWindow')">X</div>
+        </div>
+        <div style="flex: 1; padding: 15px; background: #fff; font-family: 'Courier New', monospace; font-size: 12px; overflow-y: auto;">
+            <p><b>📁 C:\Мои документы</b></p>
+            <p style="color: #888; font-size: 11px;">Файлов: 3</p>
+            <br>
+            <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+            <br>
+            <p><b>🖼️ friend_photo.jpg</b> <span style="color: #888;">(фото)</span></p>
+            <div style="margin: 12px 0; text-align: center;">
+                <img src="friend.jpg" 
+                     style="max-width: 100%; max-height: 220px; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.2s;" 
+                     onclick="openPhotoFull()" 
+                     onmouseover="this.style.transform='scale(1.03)'"
+                     onmouseout="this.style.transform='scale(1)'"
+                     onerror="this.style.display='none'; document.getElementById('photoFallback').style.display='block';">
+                <div id="photoFallback" style="display: none; padding: 40px; background: #f0f0f0; border: 1px dashed #999; margin: 10px;">
+                    <p style="font-size: 32px;">📷</p>
+                    <p style="color: #888; margin-top: 5px;">Фото не найдено</p>
+                    <p style="color: #aaa; font-size: 10px;">(Положи файл friend.jpg рядом с desktop.html)</p>
+                </div>
+                <p style="color: #555; font-size: 10px; margin-top: 8px;">Кликни чтобы увеличить</p>
+            </div>
+            <br>
+            <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+            <br>
+            <p><b>📄 notes_1.txt</b> <span style="color: #888;">(текст)</span></p>
+            <p style="padding: 8px 12px; background: #f8f8f8; border-left: 3px solid #008080; margin: 5px 0; line-height: 1.6;">"Помню тот день, когда мы познакомились. Поспорили тогда, чей ПК круче. Смешные были времена..."</p>
+            <p style="text-align: right; color: #555; font-size: 10px;">— D.</p>
+            <br>
+            <p><b>📄 notes_2.txt</b> <span style="color: #888;">(текст)</span></p>
+            <p style="padding: 8px 12px; background: #f8f8f8; border-left: 3px solid #008080; margin: 5px 0; line-height: 1.6;">"Если что-то случится — ищи меня не здесь. Связь будет в реале. Не забывай наши шутки."</p>
+            <p style="text-align: right; color: #555; font-size: 10px;">— D.</p>
+        </div>
+    </div>
+
+    <!-- ⚙️ Настройки -->
+    <div class="window" id="settingsWindow" style="top: 100px; left: 220px; width: 540px; height: 420px;">
+        <div class="window-header" onmousedown="dragMouseDown(event, 'settingsWindow')">
+            <span>⚙️ Настройки</span>
+            <div class="close-btn" onclick="closeWindow('settingsWindow')">X</div>
+        </div>
+        <div style="flex: 1; display: flex; background: #c0c0c0;">
+            <div style="width: 145px; background: #d8d8d8; border-right: 2px solid #808080; padding: 10px 0; flex-shrink: 0;">
+                <div class="settings-tab active" onclick="switchSettingsTab('general', this)">🖥️ Общие</div>
+                <div class="settings-tab" onclick="switchSettingsTab('display', this)">🖼️ Экран</div>
+                <div class="settings-tab" onclick="switchSettingsTab('network', this)">🌐 Сеть</div>
+                <div class="settings-tab" onclick="switchSettingsTab('security', this)">🔐 Безопасность</div>
+            </div>
+            <div id="settingsContent" style="flex: 1; padding: 18px; background: #fff; font-family: 'Courier New', monospace; font-size: 12px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- 🖼️ Полноэкранное фото -->
+    <div class="photo-modal" id="photoModal" onclick="closePhotoFull()">
+        <img src="friend.jpg" alt="DGYJura и Dundik">
+        <p>🖱️ Кликни чтобы закрыть</p>
     </div>
 
     <!-- Корзина -->
