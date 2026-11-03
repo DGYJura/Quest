@@ -152,92 +152,6 @@
             resize: none;
         }
 
-        /* ═══ SNAKE ═══ */
-        .snake-container {
-            flex: 1;
-            padding: 15px;
-            background: #0a1a0a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            position: relative;
-        }
-
-        .snake-hud {
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        #snakeCanvas {
-            border: 2px solid #00aa00;
-            outline: none;
-            background: #0a0a0a;
-            display: block;
-        }
-
-        .snake-win-overlay {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 10, 0, 0.96);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            z-index: 10;
-            font-family: 'Courier New', monospace;
-        }
-
-        .snake-win-overlay h2 {
-            color: #ffd700;
-            font-size: 22px;
-            margin: 10px 0;
-            letter-spacing: 2px;
-        }
-
-        .snake-code-box {
-            margin: 20px 0;
-            padding: 15px 30px;
-            border: 2px solid #ffd700;
-            background: rgba(255, 215, 0, 0.1);
-        }
-
-        .snake-code-label {
-            color: #ffd700;
-            font-size: 11px;
-            letter-spacing: 2px;
-        }
-
-        .snake-code-value {
-            color: #ffd700;
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            margin-top: 5px;
-        }
-
-        .snake-btn {
-            margin-top: 15px;
-            background: #001a00;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            padding: 8px 24px;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            font-size: 13px;
-            letter-spacing: 1px;
-        }
-
-        .snake-btn:hover {
-            background: #00ff00;
-            color: #000;
-        }
-
         /* ═══ TASKBAR ═══ */
         .taskbar {
             position: absolute;
@@ -502,7 +416,7 @@
             <div class="close-btn" onclick="closeWindow('notepadWindow')">X</div>
         </div>
         <div style="flex: 1; padding: 2px; background: white;">
-            <textarea class="notepad-textarea" placeholder="Здесь можно записывать подсказки, коды и свои мысли..."></textarea>
+            <textarea id="notepadText" class="notepad-textarea" placeholder="Здесь можно записывать подсказки, коды и свои мысли..." oninput="saveNote(this.value)"></textarea>
         </div>
     </div>
 
@@ -522,22 +436,6 @@
             <p>Формат: <strong>ДД.ММ.РРРР</strong></p>
             <br>
             <p>Если ты настоящий друг — ты помнишь эту дату.</p>
-            <br>
-            <p style="color: #008080;">💡 Кстати, если станет скучно — попробуй "Змейку" на рабочем столе. Там тоже спрятан код...</p>
-        </div>
-    </div>
-
-    <!-- Змейка -->
-    <div class="window" id="snakeWindow" style="top: 40px; left: 320px; width: 460px; height: 560px;">
-        <div class="window-header" onmousedown="dragMouseDown(event, 'snakeWindow')">
-            <span>🐍 Змейка</span>
-            <div class="close-btn" onclick="closeSnake()">X</div>
-        </div>
-        <div class="snake-container">
-            <div class="snake-hud">🍎 ЯБЛОКИ: <span id="snakeScore">0</span> / 30</div>
-            <canvas id="snakeCanvas" width="400" height="400" tabindex="0"></canvas>
-            <div style="color: #00aa00; font-family: monospace; font-size: 10px;">Используй стрелки ↑ ↓ ← →</div>
-            <div class="snake-win-overlay" id="snakeWinScreen"></div>
         </div>
     </div>
 
@@ -666,7 +564,23 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // Drag
+        // ═══ СОХРАНЕНИЕ ЗАМЕТКИ ═══
+        function saveNote(value) {
+            try {
+                localStorage.setItem('dundikNotepad', value);
+            } catch(e) {}
+        }
+
+        function loadNote() {
+            try {
+                const saved = localStorage.getItem('dundikNotepad');
+                if (saved) {
+                    document.getElementById('notepadText').value = saved;
+                }
+            } catch(e) {}
+        }
+
+        // ═══ DRAG ═══
         let activeWin = null;
         let offsetX = 0, offsetY = 0;
 
@@ -741,219 +655,24 @@
             }, 500);
         }
 
-        // ═══ SNAKE GAME ═══
-        const GRID_SIZE = 20;
-        const CELL = 20;
-        const TARGET_SCORE = 30;
-        const WIN_CODE = 'DGYJURA30';
-
-        let snake = [];
-        let snakeDirection = {x: 1, y: 0};
-        let nextDirection = {x: 1, y: 0};
-        let apple = {x: 0, y: 0};
-        let snakeScore = 0;
-        let snakeInterval = null;
-        let gameRunning = false;
-        let canvasCtx = null;
-
+        // ═══ SNAKE → отдельное окно ═══
         function openSnake() {
             if (document.body.classList.contains('loading')) return;
             playSound(600, 0.05);
-            const win = document.getElementById('snakeWindow');
-            win.style.display = 'flex';
-            zIndexCounter++;
-            win.style.zIndex = zIndexCounter;
-            setTimeout(() => initSnake(), 50);
+            const w = 480;
+            const h = 620;
+            const left = Math.max(0, (window.screen.width - w) / 2);
+            const top = Math.max(0, (window.screen.height - h) / 2);
+            window.open(
+                'snake.html',
+                'snakeGame',
+                `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`
+            );
         }
-
-        function closeSnake() {
-            playSound(400, 0.05);
-            if (snakeInterval) {
-                clearInterval(snakeInterval);
-                snakeInterval = null;
-            }
-            gameRunning = false;
-            document.getElementById('snakeWindow').style.display = 'none';
-            document.getElementById('snakeWinScreen').style.display = 'none';
-        }
-
-        function initSnake() {
-            canvasCtx = document.getElementById('snakeCanvas').getContext('2d');
-            snake = [
-                {x: 5, y: 10},
-                {x: 4, y: 10},
-                {x: 3, y: 10}
-            ];
-            snakeDirection = {x: 1, y: 0};
-            nextDirection = {x: 1, y: 0};
-            snakeScore = 0;
-            apple = spawnApple();
-            gameRunning = true;
-            document.getElementById('snakeScore').innerText = '0';
-            document.getElementById('snakeWinScreen').style.display = 'none';
-            document.getElementById('snakeCanvas').focus();
-
-            if (snakeInterval) clearInterval(snakeInterval);
-            snakeInterval = setInterval(snakeTick, 130);
-            drawSnake();
-        }
-
-        function restartSnake() {
-            playSound(600, 0.05);
-            initSnake();
-        }
-
-        function spawnApple() {
-            let pos;
-            let attempts = 0;
-            do {
-                pos = {
-                    x: Math.floor(Math.random() * GRID_SIZE),
-                    y: Math.floor(Math.random() * GRID_SIZE)
-                };
-                attempts++;
-            } while (snake.some(s => s.x === pos.x && s.y === pos.y) && attempts < 500);
-            return pos;
-        }
-
-        function snakeTick() {
-            if (!gameRunning) return;
-
-            snakeDirection = nextDirection;
-            const head = {
-                x: snake[0].x + snakeDirection.x,
-                y: snake[0].y + snakeDirection.y
-            };
-
-            // Стены
-            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-                return snakeGameOver();
-            }
-
-            // Себя
-            if (snake.some(s => s.x === head.x && s.y === head.y)) {
-                return snakeGameOver();
-            }
-
-            snake.unshift(head);
-
-            if (head.x === apple.x && head.y === apple.y) {
-                snakeScore++;
-                document.getElementById('snakeScore').innerText = snakeScore;
-                playSound(800 + snakeScore * 15, 0.05);
-
-                if (snakeScore >= TARGET_SCORE) {
-                    return snakeWin();
-                }
-                apple = spawnApple();
-            } else {
-                snake.pop();
-            }
-
-            drawSnake();
-        }
-
-        function drawSnake() {
-            if (!canvasCtx) return;
-
-            // Фон
-            canvasCtx.fillStyle = '#0a0a0a';
-            canvasCtx.fillRect(0, 0, GRID_SIZE * CELL, GRID_SIZE * CELL);
-
-            // Сетка (лёгкая)
-            canvasCtx.strokeStyle = 'rgba(0, 255, 0, 0.05)';
-            canvasCtx.lineWidth = 1;
-            for (let i = 0; i <= GRID_SIZE; i++) {
-                canvasCtx.beginPath();
-                canvasCtx.moveTo(i * CELL, 0);
-                canvasCtx.lineTo(i * CELL, GRID_SIZE * CELL);
-                canvasCtx.stroke();
-                canvasCtx.beginPath();
-                canvasCtx.moveTo(0, i * CELL);
-                canvasCtx.lineTo(GRID_SIZE * CELL, i * CELL);
-                canvasCtx.stroke();
-            }
-
-            // Яблоко
-            canvasCtx.fillStyle = '#ff3333';
-            canvasCtx.beginPath();
-            canvasCtx.arc(apple.x * CELL + CELL/2, apple.y * CELL + CELL/2, CELL/2 - 2, 0, Math.PI * 2);
-            canvasCtx.fill();
-
-            // Змейка
-            snake.forEach((seg, i) => {
-                canvasCtx.fillStyle = i === 0 ? '#00ff00' : '#00aa00';
-                canvasCtx.fillRect(seg.x * CELL + 1, seg.y * CELL + 1, CELL - 2, CELL - 2);
-            });
-        }
-
-        function snakeGameOver() {
-            gameRunning = false;
-            clearInterval(snakeInterval);
-            snakeInterval = null;
-            playSound(150, 0.3, 'sawtooth');
-
-            const overlay = document.getElementById('snakeWinScreen');
-            overlay.style.display = 'flex';
-            overlay.innerHTML = `
-                <div style="font-size: 60px;">💀</div>
-                <h2 style="color: #ff3333;">GAME OVER</h2>
-                <p style="color: #00ff00; font-size: 14px;">Ты собрал ${snakeScore} из 30 яблок</p>
-                <button class="snake-btn" onclick="restartSnake()">ПОПРОБОВАТЬ СНОВА</button>
-            `;
-        }
-
-        function snakeWin() {
-            gameRunning = false;
-            clearInterval(snakeInterval);
-            snakeInterval = null;
-            playSound(1500, 0.3, 'sine');
-
-            // Сохраняем, что игрок заработал пароль
-            try {
-                localStorage.setItem('snakeWon', 'true');
-            } catch(e) {}
-
-            const overlay = document.getElementById('snakeWinScreen');
-            overlay.style.display = 'flex';
-            overlay.innerHTML = `
-                <div style="font-size: 60px;">🏆</div>
-                <h2>ПОБЕДА!</h2>
-                <p style="color: #00ff00; font-size: 14px;">Ты собрал все 30 яблок</p>
-                <div class="snake-code-box">
-                    <div class="snake-code-label">СЕКРЕТНЫЙ КОД:</div>
-                    <div class="snake-code-value">${WIN_CODE}</div>
-                </div>
-                <p style="color: #00aa00; font-size: 11px;">Используй его в BlackNet → Файлы</p>
-                <button class="snake-btn" onclick="restartSnake()">ИГРАТЬ СНОВА</button>
-            `;
-        }
-
-        // Управление змейкой
-        document.addEventListener('keydown', (e) => {
-            if (!gameRunning) return;
-
-            const tag = (document.activeElement && document.activeElement.tagName) || '';
-            if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-
-            const key = e.key;
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
-                e.preventDefault();
-            }
-
-            if (key === 'ArrowUp' && snakeDirection.y !== 1) nextDirection = {x: 0, y: -1};
-            if (key === 'ArrowDown' && snakeDirection.y !== -1) nextDirection = {x: 0, y: 1};
-            if (key === 'ArrowLeft' && snakeDirection.x !== 1) nextDirection = {x: -1, y: 0};
-            if (key === 'ArrowRight' && snakeDirection.x !== -1) nextDirection = {x: 1, y: 0};
-        });
-
-        document.getElementById('snakeCanvas').addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            document.getElementById('snakeCanvas').focus();
-        });
 
         setInterval(updateClock, 1000);
         updateClock();
+        loadNote();
         initDesktop();
     </script>
 </body>
