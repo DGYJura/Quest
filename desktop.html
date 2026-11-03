@@ -1004,12 +1004,12 @@
             }
         }
 
-        function triggerDgNotifInChat() {
+               function triggerDgNotifInChat() {
             setTimeout(() => {
                 addChatMessage('system', '⚠️ НОВОЕ СООБЩЕНИЕ ОТ DGYJura');
-                setTimeout(() => addChatMessage('unknown', 'Но сначала — проверь сообщения. Там всё написано.');
-                setTimeout(() => addChatMessage('unknown', '*сброс*'), 1200);
-                setTimeout(() => endChat(), 2000);
+                setTimeout(() => addChatMessage('unknown', 'Но сначала — проверь сообщения. Там всё написано.'), 1200);
+                setTimeout(() => addChatMessage('unknown', '*сброс*'), 2400);
+                setTimeout(() => endChat(), 3600);
             }, 1200);
         }
 
