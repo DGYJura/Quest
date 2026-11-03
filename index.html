@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,7 +61,6 @@
             transition: background 0.05s;
         }
 
-        /* 🔴 ЧЕРВОНИЙ ХРЕСТИК ПРИ НАВЕДЕННІ */
         .title-btn:hover {
             background: #ff0000;
             color: white;
@@ -132,9 +131,7 @@
             margin-bottom: 15px;
         }
 
-        .pc-icon {
-            font-size: 36px;
-        }
+        .pc-icon { font-size: 36px; }
 
         .hint-window {
             display: none;
@@ -156,69 +153,68 @@
 </head>
 <body>
 
-    <div class="win95-window" id="mainApp">
+    <div class="win95-window">
         <div class="title-bar">
             <span id="titleText">Windows 95 Quest Startup</span>
             <div class="title-btn" onclick="location.reload()">X</div>
         </div>
 
         <div class="window-body">
-            <!-- Крок 1: Старт -->
+            <!-- Старт -->
             <div id="startScreen" style="text-align: center; padding: 20px 0;">
                 <div class="icon-layout" style="justify-content: center;">
                     <span class="pc-icon">💻</span>
                     <div style="text-align: left;">
-                        <h3 style="margin-bottom: 5px;">Ласкаво просимо!</h3>
-                        <p>Натисніть нижче, щоб запустити квест.</p>
+                        <h3 style="margin-bottom: 5px;">Добро пожаловать!</h3>
+                        <p>Нажмите ниже, чтобы запустить квест.</p>
                     </div>
                 </div>
                 <button class="win95-btn" onclick="startBootSequence()" style="min-width: 140px; font-weight: bold;">
-                    Почати Квест
+                    Начать Квест
                 </button>
             </div>
 
-            <!-- Крок 2: Загрузка Win95 -->
+            <!-- Загрузка -->
             <div id="loaderScreen" style="display: none;">
                 <div class="icon-layout">
                     <span class="pc-icon">⚙️</span>
                     <div>
-                        <p id="statusText">Завантаження системних конфігурацій...</p>
+                        <p id="statusText">Загрузка системных конфигураций...</p>
                         <p style="color: #666; font-size: 11px; margin-top: 3px;" id="subStatus">C:\WINDOWS\SYSTEM32\BOOT.SYS</p>
                     </div>
                 </div>
                 <div class="progress-container" id="progressContainer"></div>
             </div>
 
-            <!-- Крок 3: Вікно входу -->
+            <!-- Логин -->
             <div id="loginScreen" style="display: none;">
                 <div class="icon-layout">
                     <span class="pc-icon">🔑</span>
                     <div>
-                        <p><b>Вхід у мережу Windows</b></p>
-                        <p style="color: #444; font-size: 11px;">Введіть мережевий пароль користувача.</p>
+                        <p><b>Вход в сеть Windows</b></p>
+                        <p style="color: #444; font-size: 11px;">Введите сетевой пароль пользователя.</p>
                     </div>
                 </div>
 
                 <form onsubmit="handleLogin(event)">
                     <div style="margin-bottom: 10px;">
-                        <label style="display: block; margin-bottom: 3px;">Ім'я користувача (Username):</label>
+                        <label style="display: block; margin-bottom: 3px;">Имя пользователя (Username):</label>
                         <input type="text" id="username" class="win95-input" autocomplete="off" autofocus placeholder="???">
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                        <button type="button" class="win95-btn" onclick="toggleHint()">Підказка</button>
+                        <button type="button" class="win95-btn" onclick="toggleHint()">Подсказка</button>
                         <button type="submit" class="win95-btn" style="font-weight: bold; min-width: 80px;">ОК</button>
                     </div>
                 </form>
 
-                <p id="errorMsg" class="error-dialog">⚠️ Помилка: Доступ відхилено. Невірне ім'я користувача.</p>
+                <p id="errorMsg" class="error-dialog">⚠️ Ошибка: Доступ отклонён. Неверное имя пользователя.</p>
 
-                <!-- Підказка зі зсувом літер -->
                 <div id="hintBox" class="hint-window">
-                    <p>🔑 <strong>Шифровка системи:</strong></p>
-                    <p style="margin: 4px 0; font-size: 13px;">Зашифрований нік: <strong>"Eveefl"</strong></p>
+                    <p>🔑 <strong>Шифровка системы:</strong></p>
+                    <p style="margin: 4px 0; font-size: 13px;">Зашифрованный ник: <strong>"Eveefl"</strong></p>
                     <p style="font-size: 10px; color: #555;">
-                        (Підказка: Змісти кожну літеру на 1 крок назад в англійському алфавіті E->D, v->u...)
+                        (Подсказка: Сдвинь каждую букву на 1 шаг назад в английском алфавите: E→D, v→u...)
                     </p>
                 </div>
             </div>
@@ -247,7 +243,7 @@
             playSound(600, 0.05);
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('loaderScreen').style.display = 'block';
-            document.getElementById('titleText').innerText = "Windows 95 - Loading System...";
+            document.getElementById('titleText').innerText = "Windows 95 - Загрузка системы...";
 
             const subStatus = document.getElementById('subStatus');
             const progressContainer = document.getElementById('progressContainer');
@@ -256,9 +252,9 @@
                 "C:\\WINDOWS\\SYSTEM32\\NET.EXE",
                 "C:\\WINDOWS\\SYSTEM32\\VMM32.VXD",
                 "C:\\WINDOWS\\FONTS\\ARIAL.TTF",
-                "Перевірка мережевих протоколів...",
-                "Завантаження профілю користувача...",
-                "Ініціалізація захисту..."
+                "Проверка сетевых протоколов...",
+                "Загрузка профиля пользователя...",
+                "Инициализация защиты..."
             ];
 
             let step = 0;
@@ -270,7 +266,6 @@
                 const block = document.createElement('div');
                 block.className = 'progress-block';
                 progressContainer.appendChild(block);
-
                 playSound(400 + (step * 20), 0.02);
 
                 if (step % 3 === 0 && bootSteps[step / 3]) {
@@ -282,7 +277,7 @@
                     setTimeout(() => {
                         document.getElementById('loaderScreen').style.display = 'none';
                         document.getElementById('loginScreen').style.display = 'block';
-                        document.getElementById('titleText').innerText = "Вхід у систему Windows";
+                        document.getElementById('titleText').innerText = "Вход в систему Windows";
                         playSound(800, 0.15, 'sine');
                     }, 300);
                 }
