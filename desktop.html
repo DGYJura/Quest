@@ -5,375 +5,384 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows 95 Desktop - Dundik Session</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
-            user-select: none;
-        }
-
-        body {
-            background-color: #008080;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            position: relative;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif; user-select: none; }
+        body { background-color: #008080; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
         body.loading { cursor: wait; }
         body.loading #desktop { pointer-events: none; }
         body.loading .taskbar { pointer-events: none; }
 
-        .boot-modal {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #000;
-            border-bottom: 2px solid #000;
-            width: 380px;
-            padding: 3px;
-            z-index: 9999;
-        }
-
-        .win95-title {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: white;
-            padding: 3px 6px;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .progress-container {
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #fff;
-            border-bottom: 2px solid #fff;
-            height: 22px;
-            background: #fff;
-            margin-top: 15px;
-            padding: 2px;
-            display: flex;
-            gap: 2px;
-        }
-
+        .boot-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; width: 380px; padding: 3px; z-index: 9999; }
+        .win95-title { background: linear-gradient(90deg, #000080, #1084d0); color: white; padding: 3px 6px; font-weight: bold; font-size: 13px; }
+        .progress-container { border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #fff; border-bottom: 2px solid #fff; height: 22px; background: #fff; margin-top: 15px; padding: 2px; display: flex; gap: 2px; }
         .progress-block { width: 10px; height: 100%; background: #000080; }
 
-        #desktop {
-            display: none;
-            height: calc(100vh - 34px);
-            padding: 20px;
-            flex-direction: column;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-content: flex-start;
-        }
-
-        .icon {
-            width: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            cursor: pointer;
-            color: white;
-            font-size: 11px;
-            text-shadow: 1px 1px 1px black;
-            padding: 6px;
-            border-radius: 2px;
-        }
-
-        .icon:hover {
-            background: rgba(0, 0, 128, 0.4);
-            border: 1px dotted #fff;
-        }
-
+        #desktop { display: none; height: calc(100vh - 34px); padding: 20px; flex-direction: column; flex-wrap: wrap; gap: 20px; align-content: flex-start; }
+        .icon { width: 80px; display: flex; flex-direction: column; align-items: center; text-align: center; cursor: pointer; color: white; font-size: 11px; text-shadow: 1px 1px 1px black; padding: 6px; border-radius: 2px; }
+        .icon:hover { background: rgba(0, 0, 128, 0.4); border: 1px dotted #fff; }
         .icon-img { font-size: 32px; margin-bottom: 4px; }
 
-        .window {
-            display: none;
-            position: absolute;
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #000;
-            border-bottom: 2px solid #000;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            flex-direction: column;
-            z-index: 100;
-        }
-
-        .window-header {
-            background: linear-gradient(90deg, #000080, #1084d0);
-            color: white;
-            padding: 3px 6px;
-            font-weight: bold;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: move;
-        }
-
-        .close-btn {
-            background: #c0c0c0;
-            border-top: 1px solid #fff;
-            border-left: 1px solid #fff;
-            border-right: 1px solid #000;
-            border-bottom: 1px solid #000;
-            width: 16px;
-            height: 14px;
-            font-size: 9px;
-            line-height: 12px;
-            text-align: center;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.05s;
-        }
-
-        .close-btn:hover {
-            background: #ff0000 !important;
-            color: white !important;
-        }
-
-        .notepad-textarea {
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            border: none;
-            outline: none;
-            padding: 8px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            resize: none;
-        }
+        .window { display: none; position: absolute; background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; box-shadow: 2px 2px 5px rgba(0,0,0,0.5); flex-direction: column; z-index: 100; }
+        .window-header { background: linear-gradient(90deg, #000080, #1084d0); color: white; padding: 3px 6px; font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; align-items: center; cursor: move; }
+        .close-btn { background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #000; border-bottom: 1px solid #000; width: 16px; height: 14px; font-size: 9px; line-height: 12px; text-align: center; color: black; font-weight: bold; cursor: pointer; transition: background 0.05s; }
+        .close-btn:hover { background: #ff0000 !important; color: white !important; }
+        .notepad-textarea { width: 100%; height: 100%; background: #fff; border: none; outline: none; padding: 8px; font-family: 'Courier New', Courier, monospace; font-size: 13px; resize: none; }
 
         /* ═══ TASKBAR ═══ */
-        .taskbar {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%;
-            height: 34px;
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2px 4px;
-            z-index: 5000;
-        }
-
-        .start-btn {
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #000;
-            border-bottom: 2px solid #000;
-            padding: 2px 8px;
-            font-weight: bold;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .start-btn.active {
-            border-top: 2px solid #000;
-            border-left: 2px solid #000;
-            border-right: 2px solid #fff;
-            border-bottom: 2px solid #fff;
-        }
-
-        .tray {
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #fff;
-            border-bottom: 2px solid #fff;
-            padding: 3px 10px;
-            font-size: 11px;
-            background: #c0c0c0;
-        }
-
-        .tray-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .tray-item {
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #808080;
-            border-bottom: 2px solid #808080;
-            padding: 3px 8px;
-            font-size: 11px;
-            background: #c0c0c0;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: default;
-        }
-
-        .tray-item .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #00aa00;
-            box-shadow: 0 0 4px #00ff00;
-            display: inline-block;
-        }
+        .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 34px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; z-index: 5000; }
+        .start-btn { background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; padding: 2px 8px; font-weight: bold; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+        .start-btn.active { border-top: 2px solid #000; border-left: 2px solid #000; border-right: 2px solid #fff; border-bottom: 2px solid #fff; }
+        .tray { border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #fff; border-bottom: 2px solid #fff; padding: 3px 10px; font-size: 11px; background: #c0c0c0; }
+        .tray-group { display: flex; align-items: center; gap: 4px; }
+        .tray-item { border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; padding: 3px 8px; font-size: 11px; background: #c0c0c0; display: flex; align-items: center; gap: 4px; cursor: default; }
+        .tray-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #00aa00; box-shadow: 0 0 4px #00ff00; display: inline-block; }
 
         /* ═══ START MENU ═══ */
-        .start-menu {
-            display: none;
-            position: absolute;
-            bottom: 34px;
-            left: 2px;
-            background: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-left: 2px solid #fff;
-            border-right: 2px solid #000;
-            border-bottom: 2px solid #000;
-            width: 220px;
-            z-index: 6000;
-            padding: 3px;
-        }
-
-        .start-menu-header {
-            background: linear-gradient(180deg, #000080, #1084d0);
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            writing-mode: vertical-rl;
-            transform: rotate(180deg);
-            padding: 6px 4px;
-            letter-spacing: 2px;
-        }
-
+        .start-menu { display: none; position: absolute; bottom: 34px; left: 2px; background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; width: 220px; z-index: 6000; padding: 3px; }
+        .start-menu-header { background: linear-gradient(180deg, #000080, #1084d0); color: white; font-weight: bold; font-size: 14px; writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 4px; letter-spacing: 2px; }
         .start-menu-body { display: flex; }
-
-        .start-menu-item {
-            padding: 8px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .start-menu-item:hover {
-            background: #000080;
-            color: white;
-        }
-
-        .start-menu-divider {
-            height: 2px;
-            background: #808080;
-            margin: 3px 0;
-            border-bottom: 1px solid #fff;
-        }
+        .start-menu-item { padding: 8px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .start-menu-item:hover { background: #000080; color: white; }
+        .start-menu-divider { height: 2px; background: #808080; margin: 3px 0; border-bottom: 1px solid #fff; }
 
         /* ═══ SHUTDOWN ═══ */
-        .shutdown-modal {
-            display: none;
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 7000;
-            justify-content: center;
-            align-items: center;
-        }
+        .shutdown-modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.3); z-index: 7000; justify-content: center; align-items: center; }
+        .shutdown-window { background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; padding: 3px; width: 380px; }
+        .shutdown-body { padding: 20px; font-size: 12px; text-align: center; }
+        .shutdown-body .pc-big { font-size: 48px; margin-bottom: 10px; }
+        .shutdown-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
 
-        .shutdown-window {
+        .win95-btn { background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; padding: 6px 18px; font-size: 12px; cursor: pointer; outline: none; color: black; min-width: 80px; }
+        .win95-btn:active { border-top: 2px solid #000; border-left: 2px solid #000; border-right: 2px solid #fff; border-bottom: 2px solid #fff; }
+
+        .power-off-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 9999; justify-content: center; align-items: center; flex-direction: column; color: #333; }
+        .power-btn { background: transparent; border: 2px solid #333; color: #333; font-size: 64px; width: 120px; height: 120px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .power-btn:hover { color: #00ff00; border-color: #00ff00; box-shadow: 0 0 30px #00ff00; }
+        .power-off-screen p { margin-top: 20px; font-size: 12px; letter-spacing: 2px; }
+
+        /* ═══ 🔔 УВЕДОМЛЕНИЯ (top-center) ═══ */
+        .top-notif {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
             background: #c0c0c0;
             border-top: 2px solid #fff;
             border-left: 2px solid #fff;
             border-right: 2px solid #000;
             border-bottom: 2px solid #000;
-            padding: 3px;
-            width: 380px;
-        }
-
-        .shutdown-body {
-            padding: 20px;
-            font-size: 12px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000080;
+            z-index: 9500;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            transition: transform 0.4s ease;
+            cursor: pointer;
+            min-width: 300px;
             text-align: center;
         }
-
-        .shutdown-body .pc-big {
-            font-size: 48px;
-            margin-bottom: 10px;
+        .top-notif.show { transform: translateX(-50%) translateY(0); }
+        .top-notif.pulse { animation: notifPulse 1s infinite; }
+        @keyframes notifPulse {
+            0%, 100% { box-shadow: 2px 2px 8px rgba(0,0,0,0.4); }
+            50% { box-shadow: 2px 2px 20px rgba(0,128,0,0.8); }
         }
 
-        .shutdown-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .win95-btn {
+        /* ═══ 📞 ТАЙМЕР ЗВОНКА (top-right) ═══ */
+        .call-timer {
+            position: fixed;
+            top: 15px;
+            right: 15px;
             background: #c0c0c0;
             border-top: 2px solid #fff;
             border-left: 2px solid #fff;
             border-right: 2px solid #000;
             border-bottom: 2px solid #000;
-            padding: 6px 18px;
-            font-size: 12px;
-            cursor: pointer;
-            outline: none;
-            color: black;
-            min-width: 80px;
+            padding: 10px 22px;
+            font-weight: bold;
+            font-size: 22px;
+            font-family: 'Courier New', monospace;
+            color: #000080;
+            z-index: 9500;
+            display: none;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+        }
+        .call-timer.danger {
+            background: #cc0000;
+            color: #ffffff;
+            animation: blink 0.5s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .win95-btn:active {
-            border-top: 2px solid #000;
-            border-left: 2px solid #000;
-            border-right: 2px solid #fff;
-            border-bottom: 2px solid #fff;
-        }
-
-        .power-off-screen {
+        /* ═══ 📞 МОДАЛКА ЗВОНКА ═══ */
+        .call-modal {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: #000;
-            z-index: 9999;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 9600;
+            justify-content: center;
+            align-items: center;
+        }
+        .call-box {
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 3px;
+            width: 340px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+            animation: callPop 0.3s ease-out;
+        }
+        @keyframes callPop {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .call-title {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .call-body { padding: 20px; text-align: center; }
+        .call-icon {
+            font-size: 64px;
+            margin-bottom: 8px;
+            animation: ring 1s infinite;
+            display: inline-block;
+        }
+        @keyframes ring {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+        .caller-name { font-size: 16px; font-weight: bold; color: #000080; margin-bottom: 4px; }
+        .caller-status { font-size: 11px; color: #555; margin-bottom: 16px; }
+        .call-buttons { display: flex; justify-content: center; gap: 12px; }
+        .call-btn-accept {
+            background: #00aa00;
+            color: white;
+            border: 2px solid #ffffff;
+            border-bottom-color: #000;
+            border-right-color: #000;
+            padding: 8px 22px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 110px;
+        }
+        .call-btn-decline {
+            background: #cc0000;
+            color: white;
+            border: 2px solid #ffffff;
+            border-bottom-color: #000;
+            border-right-color: #000;
+            padding: 8px 22px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 110px;
+        }
+
+        /* ═══ 💬 ЧАТ ═══ */
+        .chat-window {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 520px;
+            max-width: 92vw;
+            max-height: 80vh;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 3px;
+            z-index: 9700;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            flex-direction: column;
+        }
+        .chat-header {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-hangup {
+            background: #cc0000;
+            color: white;
+            border: 1px solid #fff;
+            padding: 2px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+        .chat-messages {
+            flex: 1;
+            background: #1a1a1a;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 400px;
+            min-height: 200px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .chat-msg {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            max-width: 85%;
+            word-wrap: break-word;
+            animation: msgIn 0.3s ease-out;
+        }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-msg.unknown {
+            background: #2a2a2a;
+            color: #00ff00;
+            border-left: 3px solid #ff3333;
+            align-self: flex-start;
+        }
+        .chat-msg.dundik {
+            background: #000080;
+            color: #ffffff;
+            margin-left: auto;
+            border-right: 3px solid #00cc00;
+        }
+        .chat-msg.system {
+            background: transparent;
+            color: #ffaa00;
+            text-align: center;
+            font-size: 11px;
+            border: 1px dashed #ffaa00;
+            align-self: center;
+            max-width: 100%;
+            font-style: italic;
+        }
+        .chat-msg .sender {
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 3px;
+            opacity: 0.8;
+        }
+        .chat-msg.dundik .sender { text-align: right; }
+
+        .chat-options {
+            background: #c0c0c0;
+            padding: 10px;
+            border-top: 2px solid #808080;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .chat-option-btn {
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: left;
+            color: #000080;
+            font-weight: bold;
+        }
+        .chat-option-btn:hover { background: #d0d0d0; }
+        .chat-option-btn:active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+
+        /* ═══ ☠️ ВИРУСЫ ПРИ ОТКАЗЕ ═══ */
+        .bad-virus {
+            position: fixed;
+            font-size: 48px;
+            z-index: 9900;
+            pointer-events: none;
+            animation: badVirusFloat 2s infinite;
+        }
+        @keyframes badVirusFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(15deg); }
+        }
+
+        .game-over-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9990;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            color: #333;
+            color: #ff3333;
+            text-align: center;
+            padding: 20px;
         }
-
-        .power-btn {
-            background: transparent;
-            border: 2px solid #333;
-            color: #333;
-            font-size: 64px;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
+        .game-over-screen h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px #ff0000;
+            animation: glitch 0.5s infinite;
+            letter-spacing: 3px;
         }
-
-        .power-btn:hover {
-            color: #00ff00;
-            border-color: #00ff00;
-            box-shadow: 0 0 30px #00ff00;
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-3px, 2px); }
+            40% { transform: translate(3px, -2px); }
+            60% { transform: translate(-2px, 1px); }
+            80% { transform: translate(2px, -1px); }
         }
+        .game-over-screen p { color: #fff; font-size: 14px; margin: 8px 0; max-width: 500px; }
 
-        .power-off-screen p {
-            margin-top: 20px;
+        /* ═══ 📧 СООБЩЕНИЕ DGYJura ═══ */
+        .dg-message-window {
+            display: none;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 520px;
+            max-width: 92vw;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 3px;
+            z-index: 9800;
+            box-shadow: 0 0 30px rgba(0, 128, 0, 0.6);
+            flex-direction: column;
+        }
+        .dg-message-body {
+            background: #ffffff;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
             font-size: 12px;
-            letter-spacing: 2px;
+            line-height: 1.7;
+            color: #000;
+            max-height: 60vh;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -408,11 +417,16 @@
             <span>BlackNet</span>
         </div>
 
-        <!-- 🎯 Миссия (появляется после разблокировки Файлов в BlackNet) -->
         <div class="icon" id="missionIcon" onclick="openMission()" style="display: none;">
             <div class="icon-img">🎯</div>
             <span>Миссия</span>
         </div>
+
+        <!-- 🔔 Уведомления (всплывают сверху) -->
+        <div class="top-notif" id="topNotif" onclick="handleTopNotifClick()"></div>
+
+        <!-- 📞 Таймер звонка -->
+        <div class="call-timer" id="callTimer">60</div>
     </div>
 
     <!-- Заметки -->
@@ -443,6 +457,68 @@
             <br>
             <p>Если ты настоящий друг — ты помнишь эту дату.</p>
         </div>
+    </div>
+
+    <!-- 📧 Сообщение от DGYJura (после чата) -->
+    <div class="dg-message-window" id="dgMessageWindow">
+        <div class="window-header" style="background: linear-gradient(90deg, #006400, #00aa00);">
+            <span>📧 DGYJura — Срочное сообщение</span>
+            <div class="close-btn" onclick="closeDgMessage()">X</div>
+        </div>
+        <div class="dg-message-body">
+            <p><b>Dundik!</b></p>
+            <br>
+            <p>Я знаю, кто тебе звонил. Только что получил данные от Winterdog.</p>
+            <br>
+            <p>Это был агент из конкурирующей сети — <b>«Синдикат»</b>. Они пытались тебя завербовать, но ты не поддался. Молодец.</p>
+            <br>
+            <p>Слушай внимательно: оставаться в системе опасно. Синдикат уже знает твой IP и может отследить тебя.</p>
+            <br>
+            <p><b>Единственный выход — выключить компьютер прямо сейчас.</b></p>
+            <br>
+            <p>После выключения свяжись со мной в реале. Мы встречаемся в том месте, о котором мы говорили в тот вечер. Ты помнишь.</p>
+            <br>
+            <p>Жду тебя, агент. Не подведи.</p>
+            <br>
+            <p style="color: #006400;"><b>— DGYJura</b></p>
+            <br>
+            <p style="font-size: 11px; color: #666; border-top: 1px dashed #999; padding-top: 10px;">P.S. И да — не забудь выключить компьютер через "Пуск → Завершение работы". Иначе они снова тебя найдут.</p>
+        </div>
+    </div>
+
+    <!-- 💬 Чат -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span id="chatHeaderText">📞 Неизвестный номер — 00:00</span>
+            <button class="chat-hangup" id="chatHangup" onclick="hangUp()">Завершить</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-options" id="chatOptions"></div>
+    </div>
+
+    <!-- 📞 Модалка звонка -->
+    <div class="call-modal" id="callModal">
+        <div class="call-box">
+            <div class="call-title">📞 Входящий звонок</div>
+            <div class="call-body">
+                <div class="call-icon">📱</div>
+                <div class="caller-name">Номер неизвестен</div>
+                <div class="caller-status">Входящий вызов...</div>
+                <div class="call-buttons">
+                    <button class="call-btn-decline" onclick="declineCall()">📵 Отклонить</button>
+                    <button class="call-btn-accept" onclick="acceptCall()">📞 Принять</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ☠️ Game Over -->
+    <div class="game-over-screen" id="gameOverScreen">
+        <h1>СИСТЕМА ВЗЛОМАНА</h1>
+        <p>Ты проигнорировал звонок.</p>
+        <p>Синдикат успел установить вредоносное ПО.</p>
+        <p style="color: #ffaa00; font-weight: bold; margin-top: 20px;">Попробуй ещё раз — ответь на звонок!</p>
+        <button class="win95-btn" onclick="restartFromCall()" style="margin-top: 25px; background: #c0c0c0; color: black;">Попробовать снова</button>
     </div>
 
     <!-- Панель задач -->
@@ -497,7 +573,7 @@
         </div>
     </div>
 
-    <!-- Чёрный экран -->
+    <!-- Чёрный экран (до финала) -->
     <div class="power-off-screen" id="powerOffScreen">
         <button class="power-btn" onclick="location.reload()">⏻</button>
         <p>НАЖМИТЕ ДЛЯ ВКЛЮЧЕНИЯ</p>
@@ -505,7 +581,6 @@
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
         function playSound(freq, duration = 0.08, type = 'square') {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -513,7 +588,7 @@
                 const gain = audioCtx.createGain();
                 osc.type = type;
                 osc.frequency.value = freq;
-                gain.gain.value = 0.03;
+                gain.gain.value = 0.04;
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
@@ -521,6 +596,7 @@
             } catch(e) {}
         }
 
+        // ═══ ИНИЦИАЛИЗАЦИЯ ═══
         function initDesktop() {
             const container = document.getElementById('progressContainer');
             let step = 0;
@@ -540,6 +616,8 @@
                     document.getElementById('desktop').style.display = 'flex';
                     document.body.classList.remove('loading');
                     playSound(900, 0.2);
+                    checkCallTrigger();
+                    checkTopNotif();
                 }
             }, intervalTime);
         }
@@ -570,26 +648,19 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // ═══ СОХРАНЕНИЕ ЗАМЕТКИ ═══
         function saveNote(value) {
-            try {
-                localStorage.setItem('dundikNotepad', value);
-            } catch(e) {}
+            try { localStorage.setItem('dundikNotepad', value); } catch(e) {}
         }
-
         function loadNote() {
             try {
                 const saved = localStorage.getItem('dundikNotepad');
-                if (saved) {
-                    document.getElementById('notepadText').value = saved;
-                }
+                if (saved) document.getElementById('notepadText').value = saved;
             } catch(e) {}
         }
 
         // ═══ DRAG ═══
         let activeWin = null;
         let offsetX = 0, offsetY = 0;
-
         function dragMouseDown(e, winId) {
             e = e || window.event;
             e.preventDefault();
@@ -601,7 +672,6 @@
             document.onmousemove = elementDrag;
             document.onmouseup = closeDragElement;
         }
-
         function elementDrag(e) {
             e = e || window.event;
             e.preventDefault();
@@ -610,7 +680,6 @@
                 activeWin.style.top = (e.clientY - offsetY) + "px";
             }
         }
-
         function closeDragElement() {
             document.onmousemove = null;
             document.onmouseup = null;
@@ -631,7 +700,6 @@
                 playSound(600, 0.04);
             }
         }
-
         document.addEventListener('click', function(e) {
             const menu = document.getElementById('startMenu');
             const btn = document.getElementById('startBtn');
@@ -647,33 +715,34 @@
             document.getElementById('shutdownModal').style.display = 'flex';
             playSound(500, 0.06);
         }
-
         function closeShutdown() {
             document.getElementById('shutdownModal').style.display = 'none';
             playSound(400, 0.05);
         }
-
         function shutdownComputer() {
             playSound(300, 0.3, 'sine');
             setTimeout(() => {
                 document.getElementById('shutdownModal').style.display = 'none';
-                document.getElementById('powerOffScreen').style.display = 'flex';
+                // ФИНАЛ: если чат пройден — идём в 3D-мир
+                let chatDone = false;
+                try { chatDone = localStorage.getItem('chatDone') === 'true'; } catch(e) {}
+                if (chatDone) {
+                    window.location.href = 'final.html';
+                } else {
+                    document.getElementById('powerOffScreen').style.display = 'flex';
+                }
             }, 500);
         }
 
-        // ═══ SNAKE → отдельное окно ═══
+        // ═══ SNAKE ═══
         function openSnake() {
             if (document.body.classList.contains('loading')) return;
             playSound(600, 0.05);
-            const w = 480;
-            const h = 620;
+            const w = 480, h = 620;
             const left = Math.max(0, (window.screen.width - w) / 2);
             const top = Math.max(0, (window.screen.height - h) / 2);
-            window.open(
-                'snake.html',
-                'snakeGame',
-                `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`
-            );
+            window.open('snake.html', 'snakeGame',
+                `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`);
         }
 
         // ═══ МИССИЯ ═══
@@ -684,13 +753,341 @@
                 }
             } catch(e) {}
         }
-
         function openMission() {
             if (document.body.classList.contains('loading')) return;
             playSound(600, 0.05);
             window.location.href = 'mission.html';
         }
 
+        // ═══════════════════════════════════════════════════════════════
+        // 🔔 УВЕДОМЛЕНИЯ
+        // ═══════════════════════════════════════════════════════════════
+        let topNotifCallback = null;
+
+        function showTopNotif(text, callback = null, pulse = true) {
+            const el = document.getElementById('topNotif');
+            el.textContent = text;
+            el.classList.add('show');
+            if (pulse) el.classList.add('pulse');
+            topNotifCallback = callback;
+            playSound(1000, 0.15, 'sine');
+        }
+
+        function hideTopNotif() {
+            const el = document.getElementById('topNotif');
+            el.classList.remove('show', 'pulse');
+            topNotifCallback = null;
+        }
+
+        function handleTopNotifClick() {
+            if (topNotifCallback) {
+                const cb = topNotifCallback;
+                hideTopNotif();
+                cb();
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 📞 СИСТЕМА ЗВОНКА
+        // ═══════════════════════════════════════════════════════════════
+        let callTimerInterval = null;
+        let currentTimerValue = 60;
+
+        function checkCallTrigger() {
+            let bossRead = false;
+            let callDone = false;
+            try {
+                bossRead = localStorage.getItem('bossMessageRead') === 'true';
+                callDone = localStorage.getItem('callDone') === 'true';
+            } catch(e) {}
+
+            // Не запускаем таймер если уже вызывали и всё ок
+            if (bossRead && !callDone) {
+                startCallTimer();
+            }
+        }
+
+        function startCallTimer() {
+            const el = document.getElementById('callTimer');
+            el.style.display = 'block';
+            el.classList.remove('danger');
+            currentTimerValue = 60;
+            el.textContent = currentTimerValue;
+            playSound(1200, 0.1);
+
+            if (callTimerInterval) clearInterval(callTimerInterval);
+            callTimerInterval = setInterval(() => {
+                currentTimerValue--;
+                el.textContent = currentTimerValue;
+                playSound(800, 0.03);
+
+                if (currentTimerValue <= 10) {
+                    el.classList.add('danger');
+                    playSound(400, 0.08);
+                }
+
+                if (currentTimerValue <= 0) {
+                    clearInterval(callTimerInterval);
+                    callTimerInterval = null;
+                    el.style.display = 'none';
+                    showCallModal();
+                }
+            }, 1000);
+        }
+
+        function showCallModal() {
+            document.getElementById('callModal').style.display = 'flex';
+            // Звук звонка - повторяем пока не ответят
+            playRingSound();
+        }
+
+        let ringInterval = null;
+        function playRingSound() {
+            if (ringInterval) return;
+            const doRing = () => {
+                playSound(800, 0.15);
+                setTimeout(() => playSound(1000, 0.15), 200);
+                setTimeout(() => playSound(800, 0.15), 400);
+            };
+            doRing();
+            ringInterval = setInterval(doRing, 1200);
+        }
+
+        function stopRingSound() {
+            if (ringInterval) {
+                clearInterval(ringInterval);
+                ringInterval = null;
+            }
+        }
+
+        function declineCall() {
+            stopRingSound();
+            document.getElementById('callModal').style.display = 'none';
+            playSound(200, 0.3, 'sawtooth');
+            spawnBadViruses();
+        }
+
+        function acceptCall() {
+            stopRingSound();
+            document.getElementById('callModal').style.display = 'none';
+            playSound(1200, 0.15, 'sine');
+            openChat();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // ☠️ ВИРУСЫ ПРИ ОТКАЗЕ
+        // ═══════════════════════════════════════════════════════════════
+        function spawnBadViruses() {
+            const viruses = ['🦠', '💀', '☣️', '🧬', '⚠️', '👾', '💣'];
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const v = document.createElement('div');
+                    v.className = 'bad-virus';
+                    v.textContent = viruses[Math.floor(Math.random() * viruses.length)];
+                    v.style.left = Math.random() * (window.innerWidth - 60) + 'px';
+                    v.style.top = Math.random() * (window.innerHeight - 60) + 'px';
+                    v.style.fontSize = (30 + Math.random() * 50) + 'px';
+                    document.body.appendChild(v);
+                    playSound(100 + Math.random() * 200, 0.1, 'sawtooth');
+                }, i * 60);
+            }
+            setTimeout(() => {
+                document.getElementById('gameOverScreen').style.display = 'flex';
+                playSound(100, 0.5, 'sawtooth');
+            }, 2000);
+        }
+
+        function restartFromCall() {
+            // Убираем вирусы
+            document.querySelectorAll('.bad-virus').forEach(v => v.remove());
+            document.getElementById('gameOverScreen').style.display = 'none';
+            playSound(600, 0.05);
+            startCallTimer();
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 💬 ЧАТ
+        // ═══════════════════════════════════════════════════════════════
+        let chatStartTime = null;
+        let chatTimerInterval = null;
+        let chatStep = 0;
+        let chatFlowData = [];
+
+        function openChat() {
+            document.getElementById('chatWindow').style.display = 'flex';
+            document.getElementById('chatMessages').innerHTML = '';
+            document.getElementById('chatOptions').innerHTML = '';
+            chatStep = 0;
+            chatStartTime = Date.now();
+            updateChatTimer();
+            chatTimerInterval = setInterval(updateChatTimer, 1000);
+
+            // Стартовая сцена
+            setTimeout(() => addChatMessage('system', '📞 Соединение установлено...'), 500);
+            setTimeout(() => addChatMessage('unknown', 'Я знаю всё о тебе... Dundik.'), 1500);
+            setTimeout(() => showChatOptions([
+                { text: '😏 Я тоже всё о тебе знаю', next: 'resp1' },
+                { text: '🤔 Кто ты такой?', next: 'resp2' },
+                { text: '😤 Что тебе нужно?', next: 'resp3' }
+            ]), 2200);
+        }
+
+        function updateChatTimer() {
+            if (!chatStartTime) return;
+            const elapsed = Math.floor((Date.now() - chatStartTime) / 1000);
+            const m = Math.floor(elapsed / 60);
+            const s = elapsed % 60;
+            document.getElementById('chatHeaderText').textContent = 
+                `📞 Неизвестный номер — ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }
+
+        function addChatMessage(type, text) {
+            const container = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = 'chat-msg ' + type;
+            if (type === 'unknown') {
+                msg.innerHTML = '<div class="sender">???</div>' + text;
+            } else if (type === 'dundik') {
+                msg.innerHTML = '<div class="sender">Dundik</div>' + text;
+            } else {
+                msg.innerHTML = text;
+            }
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+            playSound(type === 'dundik' ? 900 : 600, 0.04);
+        }
+
+        function showChatOptions(options) {
+            const container = document.getElementById('chatOptions');
+            container.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'chat-option-btn';
+                btn.textContent = opt.text;
+                btn.onclick = () => {
+                    container.innerHTML = '';
+                    addChatMessage('dundik', opt.text.replace(/^[^\s]+\s/, ''));
+                    setTimeout(() => handleChatChoice(opt.next), 600);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function handleChatChoice(next) {
+            if (next === 'resp1') {
+                addChatMessage('unknown', 'Ха-ха! Дерзкий. Мне нравится. Но давай серьёзно.');
+                setTimeout(() => addChatMessage('unknown', 'Ты играл в Змейку. 15 яблок. Впечатляет... для новичка.'), 1200);
+                setTimeout(() => showChatOptions([
+                    { text: '💪 Это была разминка', next: 'r1a' },
+                    { text: '🤨 Слыш, ты вообще кто?', next: 'r1b' }
+                ]), 2000);
+            } else if (next === 'resp2') {
+                addChatMessage('unknown', 'Тот, кто знает больше, чем следует. И следит за тобой с самого начала.');
+                setTimeout(() => addChatMessage('unknown', 'Ты прошёл все проверки. Но настоящий тест начинается сейчас.'), 1200);
+                setTimeout(() => showChatOptions([
+                    { text: '🔥 Я готов', next: 'r1a' },
+                    { text: '😴 Может, попозже?', next: 'r1b' }
+                ]), 2200);
+            } else if (next === 'resp3') {
+                addChatMessage('unknown', 'Не так быстро, агент. Сначала проверка.');
+                setTimeout(() => addChatMessage('unknown', 'Твоя реакция — 200мс. Слабо для агента BlackNet.'), 1200);
+                setTimeout(() => showChatOptions([
+                    { text: '😎 Я просто дал тебе шанс', next: 'r1a' },
+                    { text: '🫡 Ок, что дальше?', next: 'r1b' }
+                ]), 2200);
+            } else if (next === 'r1a') {
+                addChatMessage('unknown', 'Ладно, хватит болтовни. У меня к тебе предложение...');
+                triggerDgNotifInChat();
+            } else if (next === 'r1b') {
+                addChatMessage('unknown', 'Не торопись. У меня к тебе предложение, которое изменит всё...');
+                triggerDgNotifInChat();
+            }
+        }
+
+        function triggerDgNotifInChat() {
+            setTimeout(() => {
+                addChatMessage('system', '⚠️ НОВОЕ СООБЩЕНИЕ ОТ DGYJura');
+                setTimeout(() => addChatMessage('unknown', 'Но сначала — проверь сообщения. Там всё написано.');
+                setTimeout(() => addChatMessage('unknown', '*сброс*'), 1200);
+                setTimeout(() => endChat(), 2000);
+            }, 1200);
+        }
+
+        function endChat() {
+            // Прячем чат, ставим флаг
+            document.getElementById('chatWindow').style.display = 'none';
+            if (chatTimerInterval) clearInterval(chatTimerInterval);
+            try {
+                localStorage.setItem('callDone', 'true');
+                localStorage.setItem('chatDone', 'true');
+            } catch(e) {}
+            playSound(500, 0.15);
+
+            // Уведомление "Проверьте сообщения"
+            setTimeout(() => {
+                showTopNotif('📧 Проверьте сообщения', () => {
+                    openDgMessage();
+                }, true);
+            }, 500);
+        }
+
+        function openDgMessage() {
+            playSound(800, 0.1);
+            document.getElementById('dgMessageWindow').style.display = 'flex';
+            try {
+                localStorage.setItem('dgMessageRead', 'true');
+            } catch(e) {}
+        }
+
+        function closeDgMessage() {
+            playSound(400, 0.05);
+            document.getElementById('dgMessageWindow').style.display = 'none';
+            // После закрытия — уведомление про выключение
+            setTimeout(() => {
+                showTopNotif('⏻ Выключите компьютер для продолжения', () => {
+                    showShutdown();
+                }, true);
+            }, 400);
+        }
+
+        function hangUp() {
+            // Принудительное завершение разговора
+            document.getElementById('chatWindow').style.display = 'none';
+            if (chatTimerInterval) clearInterval(chatTimerInterval);
+            playSound(200, 0.2);
+            // Не даём пройти дальше — только через полный диалог
+            setTimeout(() => {
+                showTopNotif('⚠️ Звонок прерван. Попробуй поговорить ещё раз', () => {
+                    startCallTimer();
+                }, true);
+            }, 500);
+        }
+
+        // ═══ ПРОВЕРКА УВЕДОМЛЕНИЙ ПРИ ЗАГРУЗКЕ ═══
+        function checkTopNotif() {
+            let chatDone = false;
+            let dgRead = false;
+            try {
+                chatDone = localStorage.getItem('chatDone') === 'true';
+                dgRead = localStorage.getItem('dgMessageRead') === 'true';
+            } catch(e) {}
+
+            if (chatDone && !dgRead) {
+                setTimeout(() => {
+                    showTopNotif('📧 Проверьте сообщения', () => {
+                        openDgMessage();
+                    }, true);
+                }, 500);
+            } else if (chatDone && dgRead) {
+                setTimeout(() => {
+                    showTopNotif('⏻ Выключите компьютер для продолжения', () => {
+                        showShutdown();
+                    }, true);
+                }, 500);
+            }
+        }
+
+        // ═══ СТАРТ ═══
         setInterval(updateClock, 1000);
         updateClock();
         loadNote();
