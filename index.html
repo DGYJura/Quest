@@ -29,7 +29,7 @@
             border-right: 2px solid #000000;
             border-bottom: 2px solid #000000;
             box-shadow: 1px 1px 0px #808080 inset, -1px -1px 0px #ffffff inset;
-            width: 440px;
+            width: 460px;
             padding: 3px;
         }
 
@@ -149,6 +149,87 @@
             font-weight: bold;
             margin-top: 10px;
         }
+
+        /* ═══ НОВЕ: Інфо-панель (тривалість/етапи/складність) ═══ */
+        .info-panel {
+            background: #e8e8e8;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            padding: 10px 12px;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+        }
+
+        .info-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .info-label {
+            color: #000080;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        .info-value {
+            color: #000;
+            font-weight: bold;
+            background: #ffffcc;
+            padding: 2px 8px;
+            border: 1px solid #808080;
+            font-size: 11px;
+        }
+
+        /* ═══ НОВЕ: Вікно історії ═══ */
+        .story-box {
+            background: #ffffe1;
+            border: 1px solid #808080;
+            padding: 12px 14px;
+            margin: 5px 0;
+        }
+
+        .story-header {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed #808080;
+            font-size: 13px;
+            color: #000080;
+        }
+
+        .story-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #000;
+            max-height: 320px;
+            overflow-y: auto;
+            font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
+        }
+
+        .story-text p {
+            margin: 0;
+        }
+
+        .warning-box {
+            background: #ffe0e0;
+            border: 1px solid #cc0000;
+            padding: 8px 12px;
+            margin: 12px 0;
+            font-size: 11px;
+            color: #800000;
+        }
     </style>
 </head>
 <body>
@@ -161,7 +242,7 @@
 
         <div class="window-body">
             <!-- Старт -->
-            <div id="startScreen" style="text-align: center; padding: 20px 0;">
+            <div id="startScreen" style="text-align: center; padding: 10px 0;">
                 <div class="icon-layout" style="justify-content: center;">
                     <span class="pc-icon">💻</span>
                     <div style="text-align: left;">
@@ -169,9 +250,61 @@
                         <p>Нажмите ниже, чтобы запустить квест.</p>
                     </div>
                 </div>
-                <button class="win95-btn" onclick="startBootSequence()" style="min-width: 140px; font-weight: bold;">
-                    Начать Квест
+
+                <!-- 📊 Інфо про квест -->
+                <div class="info-panel">
+                    <div class="info-row">
+                        <span class="info-icon">⏱️</span>
+                        <span class="info-label">Длительность:</span>
+                        <span class="info-value">10–15 минут</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">🎯</span>
+                        <span class="info-label">Заданий:</span>
+                        <span class="info-value">6 этапов</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-icon">🔐</span>
+                        <span class="info-label">Сложность:</span>
+                        <span class="info-value">Средняя</span>
+                    </div>
+                </div>
+
+                <div class="warning-box" style="text-align: left;">
+                    ⚠️ <b>Рекомендация:</b> играй один, в тихой обстановке. Квест не прощает спешки — читай сообщения внимательно.
+                </div>
+
+                <button class="win95-btn" onclick="showStory()" style="min-width: 160px; font-weight: bold; padding: 8px 20px; margin-top: 5px;">
+                    🚀 Начать Квест
                 </button>
+            </div>
+
+            <!-- 📖 Вікно історії -->
+            <div id="storyScreen" style="display: none;">
+                <div class="story-box">
+                    <div class="story-header">
+                        <span style="font-size: 20px;">📁</span>
+                        <b>Дело №2009 — Секретная папка</b>
+                    </div>
+                    <div class="story-text">
+                        <p><b>20:47. Твой компьютер включился сам.</b></p>
+                        <br>
+                        <p>На экране — окно Windows 95, которого здесь быть не должно. Кто-то взломал систему и оставил сообщение.</p>
+                        <br>
+                        <p>Твой друг <b>DGYJura</b> — агент секретной сети BlackNet — исчез. Последний раз он выходил на связь несколько часов назад, и с тех пор тишина.</p>
+                        <br>
+                        <p>Все его файлы зашифрованы. Все пароли — загадки. А в системе уже орудует кто-то из конкурирующей сети <b>«Синдикат»</b>...</p>
+                        <br>
+                        <p style="color: #800000;"><b>У тебя есть 10–15 минут, чтобы пройти все проверки, разгадать шифры и узнать, что случилось с DGYJura.</b></p>
+                        <br>
+                        <p style="color: #555; font-size: 11px; font-style: italic;">⚠️ Некоторые данные скрыты. Придётся покопаться. Удачи, агент.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="win95-btn" onclick="startBootSequence()" style="font-weight: bold; padding: 8px 20px;">
+                        ▶ Продолжить
+                    </button>
+                </div>
             </div>
 
             <!-- Загрузка -->
@@ -239,9 +372,18 @@
             } catch(e) {}
         }
 
+        // ═══ НОВЕ: показ історії ═══
+        function showStory() {
+            playSound(700, 0.06);
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('storyScreen').style.display = 'block';
+            document.getElementById('titleText').innerText = 'Windows 95 — Брифинг';
+        }
+
         function startBootSequence() {
             playSound(600, 0.05);
             document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('storyScreen').style.display = 'none';
             document.getElementById('loaderScreen').style.display = 'block';
             document.getElementById('titleText').innerText = "Windows 95 - Загрузка системы...";
 
