@@ -31,7 +31,7 @@
         .taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 34px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; z-index: 5000; }
         .start-btn { background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #000; border-bottom: 2px solid #000; padding: 2px 8px; font-weight: bold; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer; }
         .start-btn.active { border-top: 2px solid #000; border-left: 2px solid #000; border-right: 2px solid #fff; border-bottom: 2px solid #fff; }
-        .tray { border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #fff; border-bottom: 2px solid #fff; padding: 3px 10px; font-size: 11px; background: #c0c0c0; }
+        .tray { border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #fff; border-bottom: 2px solid #fff; padding: 3px 10px; font-size: 11px; background: #c0c0c0; cursor: default; }
         .tray-group { display: flex; align-items: center; gap: 4px; }
         .tray-item { border-top: 2px solid #fff; border-left: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; padding: 3px 8px; font-size: 11px; background: #c0c0c0; display: flex; align-items: center; gap: 4px; cursor: default; }
         .tray-item .dot { width: 7px; height: 7px; border-radius: 50%; background: #00aa00; box-shadow: 0 0 4px #00ff00; display: inline-block; }
@@ -384,6 +384,57 @@
             max-height: 60vh;
             overflow-y: auto;
         }
+
+        /* ═══ 🎁 МОДАЛКА СБРОСА ПРОГРЕССА ═══ */
+        .reset-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        .reset-window {
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 3px;
+            width: 400px;
+            max-width: 92vw;
+        }
+        .reset-body {
+            padding: 20px;
+            font-size: 12px;
+            text-align: center;
+        }
+        .reset-body .reset-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+        .reset-body p { margin: 8px 0; line-height: 1.6; }
+        .reset-list {
+            text-align: left;
+            background: #fff;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            padding: 10px 15px;
+            margin: 12px 0;
+            font-size: 11px;
+            color: #333;
+            line-height: 1.8;
+        }
+        .reset-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 18px;
+        }
     </style>
 </head>
 <body class="loading">
@@ -422,10 +473,7 @@
             <span>Миссия</span>
         </div>
 
-        <!-- 🔔 Уведомления (всплывают сверху) -->
         <div class="top-notif" id="topNotif" onclick="handleTopNotifClick()"></div>
-
-        <!-- 📞 Таймер звонка -->
         <div class="call-timer" id="callTimer">60</div>
     </div>
 
@@ -459,7 +507,7 @@
         </div>
     </div>
 
-    <!-- 📧 Сообщение от DGYJura (после чата) -->
+    <!-- 📧 Сообщение от DGYJura -->
     <div class="dg-message-window" id="dgMessageWindow">
         <div class="window-header" style="background: linear-gradient(90deg, #006400, #00aa00);">
             <span>📧 DGYJura — Срочное сообщение</span>
@@ -521,6 +569,30 @@
         <button class="win95-btn" onclick="restartFromCall()" style="margin-top: 25px; background: #c0c0c0; color: black;">Попробовать снова</button>
     </div>
 
+    <!-- 🎁 Модалка сброса прогресса -->
+    <div class="reset-modal" id="resetModal">
+        <div class="reset-window">
+            <div class="win95-title">⚠️ Сброс прогресса</div>
+            <div class="reset-body">
+                <div class="reset-icon">⚠️</div>
+                <p><b>Сбросить весь прогресс квеста?</b></p>
+                <div class="reset-list">
+                    🗑️ Логин BlackNet<br>
+                    🗑️ Пароль Файлов<br>
+                    🗑️ Пройденная миссия<br>
+                    🗑️ Дзвінок та чат<br>
+                    🗑️ Пройденная Змейка<br>
+                    🗑️ Текст нотатки
+                </div>
+                <p style="color: #800000; font-size: 11px;">Это действие нельзя отменить</p>
+                <div class="reset-buttons">
+                    <button class="win95-btn" onclick="closeReset()">Отмена</button>
+                    <button class="win95-btn" onclick="doReset()" style="color: #cc0000; font-weight: bold;">Сбросить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Панель задач -->
     <div class="taskbar">
         <div class="start-btn" id="startBtn" onclick="toggleStartMenu(event)">
@@ -533,7 +605,7 @@
             <div class="tray-item" title="Текущий пользователь">
                 👤 Dundik
             </div>
-            <div class="tray" id="clockTray">12:00 PM</div>
+            <div class="tray" id="clockTray" onclick="handleClockClick()">12:00 PM</div>
         </div>
     </div>
 
@@ -573,7 +645,7 @@
         </div>
     </div>
 
-    <!-- Чёрный экран (до финала) -->
+    <!-- Чёрный экран -->
     <div class="power-off-screen" id="powerOffScreen">
         <button class="power-btn" onclick="location.reload()">⏻</button>
         <p>НАЖМИТЕ ДЛЯ ВКЛЮЧЕНИЯ</p>
@@ -723,7 +795,6 @@
             playSound(300, 0.3, 'sine');
             setTimeout(() => {
                 document.getElementById('shutdownModal').style.display = 'none';
-                // ФИНАЛ: если чат пройден — идём в 3D-мир
                 let chatDone = false;
                 try { chatDone = localStorage.getItem('chatDone') === 'true'; } catch(e) {}
                 if (chatDone) {
@@ -757,6 +828,46 @@
             if (document.body.classList.contains('loading')) return;
             playSound(600, 0.05);
             window.location.href = 'mission.html';
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🎁 СБРОС ПРОГРЕССА — тройной клик на часы
+        // ═══════════════════════════════════════════════════════════════
+        let clockClickCount = 0;
+        let clockClickTimer = null;
+
+        function handleClockClick() {
+            clockClickCount++;
+            playSound(700 + clockClickCount * 100, 0.04);
+
+            if (clockClickTimer) clearTimeout(clockClickTimer);
+
+            if (clockClickCount >= 3) {
+                clockClickCount = 0;
+                showResetConfirm();
+            } else {
+                clockClickTimer = setTimeout(() => {
+                    clockClickCount = 0;
+                }, 900);
+            }
+        }
+
+        function showResetConfirm() {
+            playSound(500, 0.08);
+            document.getElementById('resetModal').style.display = 'flex';
+        }
+
+        function closeReset() {
+            playSound(400, 0.05);
+            document.getElementById('resetModal').style.display = 'none';
+        }
+
+        function doReset() {
+            playSound(200, 0.3, 'sawtooth');
+            try { localStorage.clear(); } catch(e) {}
+            setTimeout(() => {
+                location.reload();
+            }, 400);
         }
 
         // ═══════════════════════════════════════════════════════════════
@@ -801,7 +912,6 @@
                 callDone = localStorage.getItem('callDone') === 'true';
             } catch(e) {}
 
-            // Не запускаем таймер если уже вызывали и всё ок
             if (bossRead && !callDone) {
                 startCallTimer();
             }
@@ -837,7 +947,6 @@
 
         function showCallModal() {
             document.getElementById('callModal').style.display = 'flex';
-            // Звук звонка - повторяем пока не ответят
             playRingSound();
         }
 
@@ -898,7 +1007,6 @@
         }
 
         function restartFromCall() {
-            // Убираем вирусы
             document.querySelectorAll('.bad-virus').forEach(v => v.remove());
             document.getElementById('gameOverScreen').style.display = 'none';
             playSound(600, 0.05);
@@ -911,7 +1019,6 @@
         let chatStartTime = null;
         let chatTimerInterval = null;
         let chatStep = 0;
-        let chatFlowData = [];
 
         function openChat() {
             document.getElementById('chatWindow').style.display = 'flex';
@@ -922,7 +1029,6 @@
             updateChatTimer();
             chatTimerInterval = setInterval(updateChatTimer, 1000);
 
-            // Стартовая сцена
             setTimeout(() => addChatMessage('system', '📞 Соединение установлено...'), 500);
             setTimeout(() => addChatMessage('unknown', 'Я знаю всё о тебе... Dundik.'), 1500);
             setTimeout(() => showChatOptions([
@@ -1004,7 +1110,7 @@
             }
         }
 
-                       function triggerDgNotifInChat() {
+        function triggerDgNotifInChat() {
             setTimeout(() => {
                 addChatMessage('system', '⚠️ НОВОЕ СООБЩЕНИЕ ОТ DGYJura');
                 setTimeout(() => addChatMessage('unknown', 'Но сначала — проверь сообщения. Там всё написано.'), 1200);
@@ -1014,7 +1120,6 @@
         }
 
         function endChat() {
-            // Прячем чат, ставим флаг
             document.getElementById('chatWindow').style.display = 'none';
             if (chatTimerInterval) clearInterval(chatTimerInterval);
             try {
@@ -1023,7 +1128,6 @@
             } catch(e) {}
             playSound(500, 0.15);
 
-            // Уведомление "Проверьте сообщения"
             setTimeout(() => {
                 showTopNotif('📧 Проверьте сообщения', () => {
                     openDgMessage();
@@ -1042,7 +1146,6 @@
         function closeDgMessage() {
             playSound(400, 0.05);
             document.getElementById('dgMessageWindow').style.display = 'none';
-            // После закрытия — уведомление про выключение
             setTimeout(() => {
                 showTopNotif('⏻ Выключите компьютер для продолжения', () => {
                     showShutdown();
@@ -1051,11 +1154,9 @@
         }
 
         function hangUp() {
-            // Принудительное завершение разговора
             document.getElementById('chatWindow').style.display = 'none';
             if (chatTimerInterval) clearInterval(chatTimerInterval);
             playSound(200, 0.2);
-            // Не даём пройти дальше — только через полный диалог
             setTimeout(() => {
                 showTopNotif('⚠️ Звонок прерван. Попробуй поговорить ещё раз', () => {
                     startCallTimer();
@@ -1063,7 +1164,7 @@
             }, 500);
         }
 
-        // ═══ ПРОВЕРКА УВЕДОМЛЕНИЙ ПРИ ЗАГРУЗКЕ ═══
+        // ═══ ПРОВЕРКА ПРИ ЗАГРУЗКЕ ═══
         function checkTopNotif() {
             let chatDone = false;
             let dgRead = false;
