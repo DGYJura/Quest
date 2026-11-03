@@ -9,151 +9,214 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
             user-select: none;
         }
 
         body {
-            background: #000;
-            color: #00ff00;
+            background: #2a2a2a;
             height: 100vh;
             overflow: hidden;
+            color: #d0d0d0;
         }
 
-        /* ═══ ЭКРАН ЛОГИНА ═══ */
-        .login-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
+        /* ═══ ОБЩИЕ WIN95-DARK КОМПОНЕНТЫ ═══ */
+        .win95-out {
+            background: #3a3a3a;
+            border-top: 2px solid #6a6a6a;
+            border-left: 2px solid #6a6a6a;
+            border-right: 2px solid #1a1a1a;
+            border-bottom: 2px solid #1a1a1a;
         }
 
-        .terminal-window {
-            width: 480px;
-            background: #050b05;
-            border: 2px solid #00ff00;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        .win95-in {
+            background: #1a1a1a;
+            border-top: 2px solid #1a1a1a;
+            border-left: 2px solid #1a1a1a;
+            border-right: 2px solid #6a6a6a;
+            border-bottom: 2px solid #6a6a6a;
         }
 
-        .terminal-header {
-            background: linear-gradient(90deg, #001a00, #003300);
-            color: #00ff00;
-            padding: 6px 10px;
+        .title-bar {
+            background: linear-gradient(90deg, #000040, #000080);
+            color: white;
+            padding: 3px 6px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 13px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #00ff00;
         }
 
-        .terminal-close {
-            background: transparent;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            width: 20px;
-            height: 18px;
+        .title-close {
+            background: #3a3a3a;
+            border-top: 1px solid #6a6a6a;
+            border-left: 1px solid #6a6a6a;
+            border-right: 1px solid #1a1a1a;
+            border-bottom: 1px solid #1a1a1a;
+            width: 16px;
+            height: 14px;
+            font-size: 9px;
+            line-height: 12px;
             text-align: center;
-            cursor: pointer;
-            font-size: 11px;
-            line-height: 16px;
-        }
-
-        .terminal-close:hover {
-            background: #ff0000;
-            border-color: #ff0000;
-            color: white;
-        }
-
-        .terminal-body {
-            padding: 20px;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .danger-text {
-            color: #ff3333;
+            color: #d0d0d0;
             font-weight: bold;
-            margin-bottom: 12px;
+            cursor: pointer;
+            transition: background 0.05s;
         }
 
-        .info-text {
-            color: #00ff00;
-            margin-bottom: 6px;
+        .title-close:hover {
+            background: #ff0000 !important;
+            color: white !important;
         }
 
-        .key-label {
-            color: #00cc00;
-            margin-bottom: 4px;
-            margin-top: 15px;
-            display: block;
+        .win95-btn {
+            background: #3a3a3a;
+            border-top: 2px solid #6a6a6a;
+            border-left: 2px solid #6a6a6a;
+            border-right: 2px solid #1a1a1a;
+            border-bottom: 2px solid #1a1a1a;
+            color: #d0d0d0;
+            padding: 6px 16px;
             font-size: 12px;
-        }
-
-        .key-input {
-            width: 100%;
-            background: #000;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            padding: 8px 10px;
-            font-size: 16px;
-            outline: none;
-            letter-spacing: 3px;
-            font-family: inherit;
-            text-align: center;
-        }
-
-        .key-input:focus {
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-        }
-
-        .submit-btn {
-            width: 100%;
-            margin-top: 12px;
-            background: #001a00;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            padding: 8px;
-            font-size: 13px;
-            font-weight: bold;
             cursor: pointer;
-            font-family: inherit;
+            outline: none;
+        }
+
+        .win95-btn:hover {
+            background: #4a4a4a;
+        }
+
+        .win95-btn:active {
+            border-top: 2px solid #1a1a1a;
+            border-left: 2px solid #1a1a1a;
+            border-right: 2px solid #6a6a6a;
+            border-bottom: 2px solid #6a6a6a;
+        }
+
+        .win95-btn.primary {
+            color: #00cc00;
+            font-weight: bold;
+        }
+
+        .win95-input {
+            background: #1a1a1a;
+            border-top: 2px solid #1a1a1a;
+            border-left: 2px solid #1a1a1a;
+            border-right: 2px solid #6a6a6a;
+            border-bottom: 2px solid #6a6a6a;
+            color: #00cc00;
+            padding: 6px 10px;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+            font-family: 'Courier New', monospace;
             letter-spacing: 2px;
         }
 
-        .submit-btn:hover {
-            background: #00ff00;
-            color: #000;
+        /* ═══ ЭКРАН ЛОГИНА ═══ */
+        .login-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .status-text {
-            margin-top: 15px;
+        .login-window {
+            width: 480px;
+            max-width: 90vw;
+        }
+
+        .login-body {
+            padding: 20px;
+        }
+
+        .login-header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #2a2a2a;
+            margin-bottom: 15px;
+        }
+
+        .login-icon {
+            font-size: 42px;
+        }
+
+        .login-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .login-subtitle {
+            font-size: 11px;
+            color: #a0a0a0;
+        }
+
+        .login-form-row {
+            margin-bottom: 12px;
+        }
+
+        .login-label {
+            display: block;
             font-size: 12px;
-            color: #666;
-            text-align: center;
+            color: #d0d0d0;
+            margin-bottom: 4px;
         }
 
-        .status-text.error { color: #ff3333; }
-        .status-text.success { color: #00ff00; }
+        .login-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
 
-        /* ═══ ПРОГРЕСС ХАКА ═══ */
+        .login-status {
+            font-size: 11px;
+            color: #808080;
+            text-align: center;
+            margin-top: 12px;
+            min-height: 16px;
+        }
+
+        .login-status.error { color: #ff5555; }
+        .login-status.success { color: #00ff00; }
+
+        .login-hint {
+            display: none;
+            margin-top: 12px;
+            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #00cc00;
+        }
+
         .hack-progress {
             width: 100%;
             height: 20px;
-            border: 2px solid #00ff00;
-            background: #001100;
+            background: #1a1a1a;
+            border-top: 2px solid #1a1a1a;
+            border-left: 2px solid #1a1a1a;
+            border-right: 2px solid #6a6a6a;
+            border-bottom: 2px solid #6a6a6a;
             margin: 15px 0;
             overflow: hidden;
+            padding: 2px;
         }
 
         .hack-progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #003300, #00ff00);
-            transition: width 0.5s ease;
+            background: linear-gradient(90deg, #004400, #00cc00);
+            transition: width 0.4s ease;
         }
 
         /* ═══ МОДАЛКИ ПОДТВЕРЖДЕНИЯ ═══ */
@@ -162,79 +225,46 @@
             position: fixed;
             top: 0; left: 0;
             width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
             z-index: 100;
         }
 
-        .confirm-box {
-            background: #1a0000;
-            border: 2px solid #ff0000;
-            color: #ff3333;
-            padding: 20px 25px;
-            width: 440px;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
-            animation: pulse 1.5s infinite;
+        .confirm-window {
+            width: 460px;
+            max-width: 90vw;
         }
 
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
-            50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.9); }
-        }
-
-        .confirm-box h2 {
-            margin-bottom: 15px;
-            font-size: 15px;
+        .confirm-body {
+            padding: 20px;
+            font-size: 12px;
+            color: #d0d0d0;
             text-align: center;
-            color: #ff6666;
-            letter-spacing: 1px;
         }
 
-        .confirm-box p {
-            margin: 10px 0;
-            font-size: 13px;
+        .confirm-body h3 {
+            color: #ffaa00;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .confirm-body p {
+            margin: 8px 0;
             line-height: 1.6;
         }
 
-        .confirm-box .warning {
-            color: #ffff00;
+        .confirm-body .warning {
+            color: #ff5555;
             font-weight: bold;
-            margin-top: 12px;
+            margin-top: 10px;
         }
 
         .confirm-buttons {
             display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .confirm-btn {
-            padding: 8px 16px;
-            background: #000;
-            border: 2px solid #ff3333;
-            color: #ff3333;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .confirm-btn:hover {
-            background: #ff3333;
-            color: #000;
-        }
-
-        .confirm-btn.safe {
-            border-color: #00ff00;
-            color: #00ff00;
-        }
-
-        .confirm-btn.safe:hover {
-            background: #00ff00;
-            color: #000;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 18px;
         }
 
         /* ═══ ГЛАВНОЕ ПРИЛОЖЕНИЕ ═══ */
@@ -244,37 +274,18 @@
             top: 0; left: 0;
             width: 100vw; height: 100vh;
             flex-direction: column;
-            background: #0a0f0a;
+            background: #2a2a2a;
         }
 
-        .app-header {
-            background: linear-gradient(90deg, #001a00, #003300);
-            color: #00ff00;
-            padding: 8px 15px;
+        .app-title-bar {
+            background: linear-gradient(90deg, #000040, #000080);
+            color: white;
+            padding: 4px 8px;
             font-weight: bold;
             font-size: 13px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #00ff00;
-        }
-
-        .app-close {
-            background: transparent;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            width: 22px;
-            height: 20px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 11px;
-            line-height: 18px;
-        }
-
-        .app-close:hover {
-            background: #ff0000;
-            border-color: #ff0000;
-            color: white;
         }
 
         .app-body {
@@ -284,37 +295,38 @@
         }
 
         .sidebar {
-            width: 220px;
-            background: #0f150f;
-            border-right: 1px solid #003300;
-            padding: 10px 0;
+            width: 240px;
+            background: #333333;
+            border-right: 2px solid #1a1a1a;
+            padding: 8px 0;
             overflow-y: auto;
         }
 
         .sidebar-item {
-            padding: 12px 18px;
+            padding: 10px 16px;
             cursor: pointer;
             border-left: 3px solid transparent;
-            color: #00aa00;
+            color: #a0a0a0;
             font-size: 13px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 8px;
         }
 
         .sidebar-item:hover {
-            background: #14201a;
-            color: #00ff00;
+            background: #3d3d3d;
+            color: #ffffff;
         }
 
         .sidebar-item.active {
-            background: #14201a;
-            border-left-color: #00ff00;
-            color: #00ff00;
+            background: #3d3d3d;
+            border-left-color: #00cc00;
+            color: #ffffff;
         }
 
         .badge {
-            background: #ff3333;
+            background: #cc0000;
             color: white;
             border-radius: 10px;
             padding: 1px 8px;
@@ -324,177 +336,269 @@
 
         .content {
             flex: 1;
-            padding: 30px 40px;
+            padding: 24px 32px;
             overflow-y: auto;
-            color: #00ff00;
+            color: #d0d0d0;
         }
 
         .content h1 {
-            font-size: 22px;
-            margin-bottom: 8px;
-            color: #00ff00;
+            font-size: 20px;
+            margin-bottom: 6px;
+            color: #ffffff;
         }
 
         .content .subtitle {
-            color: #00aa00;
-            font-size: 13px;
-            margin-bottom: 25px;
+            color: #a0a0a0;
+            font-size: 12px;
+            margin-bottom: 22px;
         }
 
         .info-box {
-            padding: 15px;
-            border: 1px dashed #00aa00;
-            background: #050b05;
-            font-size: 13px;
+            padding: 12px 15px;
+            background: #333333;
+            border: 1px solid #1a1a1a;
+            font-size: 12px;
             line-height: 1.7;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .info-box .label {
-            color: #00aa00;
+            color: #808080;
             font-size: 11px;
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
 
         .info-box .value {
-            color: #00ff00;
-            font-size: 14px;
+            color: #e0e0e0;
+            font-size: 13px;
+        }
+
+        .info-box .value.green {
+            color: #00cc00;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 16px;
         }
 
         .stat-card {
-            padding: 15px;
-            background: #050b05;
-            border: 1px solid #003300;
+            padding: 14px;
+            background: #333333;
+            border: 1px solid #1a1a1a;
             text-align: center;
         }
 
         .stat-card .num {
-            font-size: 28px;
-            color: #00ff00;
+            font-size: 26px;
+            color: #00cc00;
             font-weight: bold;
         }
 
         .stat-card .lbl {
-            font-size: 11px;
-            color: #00aa00;
+            font-size: 10px;
+            color: #a0a0a0;
             margin-top: 5px;
+        }
+
+        /* ═══ ФАЙЛЫ ═══ */
+        .files-locked {
+            padding: 30px;
+            text-align: center;
+            background: #333333;
+            border: 1px dashed #555;
+        }
+
+        .files-locked .lock-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .files-locked h3 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .files-locked p {
+            color: #a0a0a0;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .files-locked .password-input {
+            margin: 15px auto;
+            max-width: 300px;
+        }
+
+        .files-locked .hint-note {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 204, 0, 0.08);
+            border-left: 3px solid #00cc00;
+            color: #00cc00;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .file-list {
+            background: #333333;
+            border: 1px solid #1a1a1a;
+        }
+
+        .file-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #d0d0d0;
+            font-size: 13px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .file-item:hover {
+            background: #3d3d3d;
+            border-left-color: #00cc00;
+        }
+
+        .file-item.selected {
+            background: #3d3d3d;
+            border-left-color: #00cc00;
+            color: #00cc00;
+        }
+
+        .file-preview {
+            margin-top: 16px;
+            padding: 20px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #00cc00;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+
+        .file-preview .placeholder {
+            color: #555;
+            text-align: center;
+            padding-top: 60px;
+            font-family: "MS Sans Serif", Tahoma, sans-serif;
         }
     </style>
 </head>
 <body>
 
     <!-- ═══ ЛОГИН ═══ -->
-    <div class="login-container" id="loginScreen">
-        <div class="terminal-window">
-            <div class="terminal-header">
+    <div class="login-screen" id="loginScreen">
+        <div class="login-window win95-out">
+            <div class="title-bar">
                 <span>🕵️ BlackNet Security System v2.0</span>
-                <div class="terminal-close" onclick="location.href='desktop.html'">X</div>
+                <div class="title-close" onclick="goBack()">X</div>
             </div>
-            <div class="terminal-body" id="loginBody">
-                <p class="danger-text">[RESTRICTED GOVERNMENT ACCESS]</p>
-                <p class="info-text">Для продолжения требуется верификация личности.</p>
-                <p class="info-text" style="color: #00aa00;">Введите дату рождения агента <b>DGYJura</b>:</p>
+            <div class="login-body">
+                <div class="login-header">
+                    <div class="login-icon">🔐</div>
+                    <div>
+                        <div class="login-title">Ограниченный доступ</div>
+                        <div class="login-subtitle">Требуется верификация личности</div>
+                    </div>
+                </div>
 
-                <form onsubmit="handleAccess(event)">
-                    <label class="key-label">KEY_INPUT></label>
-                    <input type="text" id="accessKey" class="key-input" autocomplete="off" placeholder="__.__.____" maxlength="10" autofocus>
-                    <button type="submit" class="submit-btn">ВОЙТИ</button>
-                </form>
+                <div id="loginForm">
+                    <div class="login-form-row">
+                        <label class="login-label">Введите дату рождения агента <b>DGYJura</b>:</label>
+                        <input type="text" id="accessKey" class="win95-input" autocomplete="off" placeholder="__.__.____" maxlength="10" autofocus>
+                    </div>
+                    <div class="login-buttons">
+                        <button class="win95-btn" onclick="toggleHint()">Подсказка</button>
+                        <button class="win95-btn primary" onclick="handleAccess()">Войти</button>
+                    </div>
+                    <div class="login-hint" id="hintBox">
+                        🔑 Это день рождения DGYJura — того, кому ты делаешь этот квест.<br>
+                        Формат: ДД.ММ.РРРР
+                    </div>
+                    <div class="login-status" id="statusText">Статус: Ожидание кода...</div>
+                </div>
 
-                <p id="statusText" class="status-text">Статус: Ожидание кода...</p>
+                <div id="loginProgress" style="display: none;">
+                    <div class="hack-progress">
+                        <div class="hack-progress-bar" id="hackBar"></div>
+                    </div>
+                    <div class="login-status" id="progressStatus">Инициализация...</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══ МОДАЛКА 1 ═══ -->
+    <!-- Модалка 1 -->
     <div class="confirm-overlay" id="confirmModal1">
-        <div class="confirm-box">
-            <h2>⚠️ ПРОВЕРКА БЕЗОПАСНОСТИ</h2>
-            <p>Ты уверен, что правильно указал дату рождения агента <b>DGYJura</b>?</p>
-            <p class="warning">❌ Внимание: при ошибке система будет заблокирована на 30 минут!</p>
-            <div class="confirm-buttons">
-                <button class="confirm-btn" onclick="backToInput()">НЕТ, ПРОВЕРИТЬ</button>
-                <button class="confirm-btn safe" onclick="showConfirm2()">ДА, Я УВЕРЕН</button>
+        <div class="confirm-window win95-out">
+            <div class="title-bar">
+                <span>⚠️ Проверка безопасности</span>
+                <div class="title-close" onclick="backToInput()">X</div>
+            </div>
+            <div class="confirm-body">
+                <h3>ПРОВЕРКА №1</h3>
+                <p>Ты уверен, что правильно указал дату рождения агента <b>DGYJura</b>?</p>
+                <p class="warning">❌ Внимание: при ошибке система будет заблокирована!</p>
+                <div class="confirm-buttons">
+                    <button class="win95-btn" onclick="backToInput()">Проверить</button>
+                    <button class="win95-btn primary" onclick="showConfirm2()">Да, я уверен</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══ МОДАЛКА 2 ═══ -->
+    <!-- Модалка 2 -->
     <div class="confirm-overlay" id="confirmModal2">
-        <div class="confirm-box">
-            <h2>⚠️ ПОСЛЕДНЯЯ ПРОВЕРКА</h2>
-            <p>Агент <b>DGYJura</b> НЕ прощает ошибок в личных данных!</p>
-            <p>После подтверждения изменить ответ будет <b>невозможно</b>.</p>
-            <p class="warning">Ты ДЕЙСТВИТЕЛЬНО уверен?</p>
-            <div class="confirm-buttons">
-                <button class="confirm-btn" onclick="backToInput()">ОТМЕНА</button>
-                <button class="confirm-btn safe" onclick="grantAccess()">ДА, ПОДТВЕРЖДАЮ</button>
+        <div class="confirm-window win95-out">
+            <div class="title-bar">
+                <span>⚠️ Последняя проверка</span>
+                <div class="title-close" onclick="backToInput()">X</div>
+            </div>
+            <div class="confirm-body">
+                <h3>ПРОВЕРКА №2</h3>
+                <p>Агент <b>DGYJura</b> не прощает ошибок в личных данных.</p>
+                <p>После подтверждения изменить ответ будет <b>невозможно</b>.</p>
+                <p class="warning">Ты действительно уверен?</p>
+                <div class="confirm-buttons">
+                    <button class="win95-btn" onclick="backToInput()">Отмена</button>
+                    <button class="win95-btn primary" onclick="grantAccess()">Да, подтверждаю</button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- ═══ ПАНЕЛЬ ═══ -->
     <div class="main-app" id="mainApp">
-        <div class="app-header">
+        <div class="app-title-bar">
             <span>🕵️ BlackNet Security System v2.0 — Панель управления</span>
-            <div class="app-close" onclick="location.href='desktop.html'">X</div>
+            <div class="title-close" onclick="goBack()">X</div>
         </div>
         <div class="app-body">
             <aside class="sidebar">
-                <div class="sidebar-item active" onclick="setActive(this)">🏠 Главная страница</div>
-                <div class="sidebar-item" onclick="setActive(this)">📋 Задания</div>
-                <div class="sidebar-item" onclick="setActive(this)">👥 Друзья</div>
-                <div class="sidebar-item" onclick="setActive(this)">💬 Сообщения <span class="badge">3</span></div>
-                <div class="sidebar-item" onclick="setActive(this)">📁 Файлы</div>
-                <div class="sidebar-item" onclick="setActive(this)">⚙️ Настройки</div>
+                <div class="sidebar-item active" onclick="navTo('home', this)">🏠 Главная</div>
+                <div class="sidebar-item" onclick="navTo('tasks', this)">📋 Задания</div>
+                <div class="sidebar-item" onclick="navTo('friends', this)">👥 Друзья</div>
+                <div class="sidebar-item" onclick="navTo('messages', this)">💬 Сообщения <span class="badge">3</span></div>
+                <div class="sidebar-item" onclick="navTo('files', this)">📁 Файлы</div>
+                <div class="sidebar-item" onclick="navTo('settings', this)">⚙️ Настройки</div>
             </aside>
-            <main class="content">
-                <h1>Главная страница</h1>
-                <p class="subtitle">Доступ разрешён. Добро пожаловать, Dundik.</p>
-
-                <div class="info-box">
-                    <div class="label">СТАТУС СИСТЕМЫ</div>
-                    <div class="value">✓ Все системы работают в штатном режиме</div>
-                </div>
-
-                <div class="info-box">
-                    <div class="label">АКТИВНЫЙ АГЕНТ</div>
-                    <div class="value">👤 Dundik · Уровень доступа: Classified</div>
-                </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="num">3</div>
-                        <div class="lbl">НОВЫХ ЗАДАНИЙ</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="num">12</div>
-                        <div class="lbl">ДРУЗЕЙ</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="num">3</div>
-                        <div class="lbl">СООБЩЕНИЙ</div>
-                    </div>
-                </div>
-
-                <div class="info-box" style="margin-top: 20px;">
-                    <div class="label">📌 СЛЕДУЮЩИЙ ШАГ</div>
-                    <div class="value">Разделы в меню слева появятся в следующих обновлениях...</div>
-                </div>
-            </main>
+            <main class="content" id="contentArea"></main>
         </div>
     </div>
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const SNAKE_PASSWORD = 'DGYJURA30';
 
         function playSound(freq, duration = 0.08, type = 'square') {
             try {
@@ -511,23 +615,29 @@
             } catch(e) {}
         }
 
-        function handleAccess(e) {
-            e.preventDefault();
-            const val = document.getElementById('accessKey').value.trim();
-            const status = document.getElementById('statusText');
+        function goBack() {
+            window.location.href = 'desktop.html';
+        }
 
-            // Принимаем форматы: 05.05.2009, 5.5.2009, 05/05/2009, 05-05-2009, 05.05/2009
+        function toggleHint() {
+            playSound(500, 0.04);
+            const box = document.getElementById('hintBox');
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function handleAccess() {
+            const val = document.getElementById('accessKey').value.trim();
             const normalized = val.replace(/[\/\-\s]/g, '.');
             const isValid = /^0?5\.0?5\.2009$/.test(normalized);
 
             if (isValid) {
                 playSound(800, 0.1);
-                // Показываем модалку 1
                 document.getElementById('confirmModal1').style.display = 'flex';
             } else {
                 playSound(150, 0.25, 'sawtooth');
-                status.className = 'status-text error';
-                status.innerText = '❌ ОШИБКА: Неверная дата. Попробуй ещё раз.';
+                const st = document.getElementById('statusText');
+                st.className = 'login-status error';
+                st.innerText = '❌ Ошибка: неверная дата. Попробуй ещё раз.';
             }
         }
 
@@ -538,8 +648,9 @@
             const input = document.getElementById('accessKey');
             input.value = '';
             input.focus();
-            document.getElementById('statusText').className = 'status-text';
-            document.getElementById('statusText').innerText = 'Статус: Ожидание кода...';
+            const st = document.getElementById('statusText');
+            st.className = 'login-status';
+            st.innerText = 'Статус: Ожидание кода...';
         }
 
         function showConfirm2() {
@@ -551,17 +662,8 @@
         function grantAccess() {
             playSound(1000, 0.2, 'triangle');
             document.getElementById('confirmModal2').style.display = 'none';
-
-            // Заменяем содержимое логина на прогресс "хака"
-            const body = document.getElementById('loginBody');
-            body.innerHTML = `
-                <p class="danger-text">[RESTRICTED GOVERNMENT ACCESS]</p>
-                <p class="info-text">✓ Проверка пройдена. Отправка данных на сервер...</p>
-                <div class="hack-progress">
-                    <div class="hack-progress-bar" id="hackBar"></div>
-                </div>
-                <p id="hackStatus" class="status-text">Инициализация протокола...</p>
-            `;
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('loginProgress').style.display = 'block';
 
             const steps = [
                 { pct: 15, msg: 'Подключение к защищённому каналу...' },
@@ -578,30 +680,201 @@
                     setTimeout(() => {
                         document.getElementById('loginScreen').style.display = 'none';
                         document.getElementById('mainApp').style.display = 'flex';
+                        renderSection('home');
                         playSound(1200, 0.3, 'sine');
-                    }, 700);
+                    }, 600);
                     return;
                 }
                 const s = steps[i++];
                 document.getElementById('hackBar').style.width = s.pct + '%';
-                const st = document.getElementById('hackStatus');
+                const st = document.getElementById('progressStatus');
                 st.innerText = s.msg;
-                if (s.pct === 100) {
-                    st.className = 'status-text success';
-                    st.style.color = '#00ff00';
-                }
+                if (s.pct === 100) st.className = 'login-status success';
                 playSound(400 + s.pct * 4, 0.04);
-                setTimeout(nextStep, 700);
+                setTimeout(nextStep, 600);
             }
             nextStep();
         }
 
-        function setActive(el) {
-            // Пока — только визуальное выделение, без навигации
+        // ═══ НАВИГАЦИЯ ═══
+        function navTo(section, el) {
             playSound(600, 0.04);
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
+            renderSection(section);
         }
+
+        function renderSection(section) {
+            const area = document.getElementById('contentArea');
+
+            if (section === 'home') {
+                area.innerHTML = `
+                    <h1>Главная страница</h1>
+                    <p class="subtitle">Доступ разрешён. Добро пожаловать, Dundik.</p>
+                    <div class="info-box">
+                        <div class="label">СТАТУС СИСТЕМЫ</div>
+                        <div class="value green">✓ Все системы работают в штатном режиме</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="label">АКТИВНЫЙ АГЕНТ</div>
+                        <div class="value">👤 Dundik · Уровень доступа: Classified</div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="num">3</div><div class="lbl">НОВЫХ ЗАДАНИЙ</div></div>
+                        <div class="stat-card"><div class="num">12</div><div class="lbl">ДРУЗЕЙ</div></div>
+                        <div class="stat-card"><div class="num">3</div><div class="lbl">СООБЩЕНИЙ</div></div>
+                    </div>
+                    <div class="info-box" style="margin-top: 16px;">
+                        <div class="label">📌 СЛЕДУЮЩИЙ ШАГ</div>
+                        <div class="value">Зайди в раздел "Файлы" — там кое-что для тебя 👀</div>
+                    </div>
+                `;
+            } else if (section === 'files') {
+                renderFiles(area);
+            } else {
+                const titles = {
+                    tasks: ['📋 Задания', 'Раздел в разработке. Скоро здесь появятся новые миссии.'],
+                    friends: ['👥 Друзья', 'Раздел в разработке. Список агентов скоро будет доступен.'],
+                    messages: ['💬 Сообщения', 'Раздел в разработке. У тебя 3 непрочитанных сообщения...'],
+                    settings: ['⚙️ Настройки', 'Раздел в разработке.']
+                };
+                const [title, desc] = titles[section] || ['Раздел', 'В разработке'];
+                area.innerHTML = `
+                    <h1>${title}</h1>
+                    <p class="subtitle">${desc}</p>
+                    <div class="info-box">
+                        <div class="label">СТАТУС</div>
+                        <div class="value" style="color: #a0a0a0;">⏳ Скоро...</div>
+                    </div>
+                `;
+            }
+        }
+
+        // ═══ ФАЙЛЫ ═══
+        function renderFiles(area) {
+            let unlocked = false;
+            try {
+                unlocked = localStorage.getItem('blacknetFilesUnlocked') === 'true';
+            } catch(e) {}
+
+            if (!unlocked) {
+                renderFilesLocked(area);
+            } else {
+                renderFilesUnlocked(area);
+            }
+        }
+
+        function renderFilesLocked(area) {
+            const snakeWon = (() => {
+                try { return localStorage.getItem('snakeWon') === 'true'; }
+                catch(e) { return false; }
+            })();
+
+            area.innerHTML = `
+                <h1>📁 Файлы</h1>
+                <p class="subtitle">Личное дело агента DGYJura</p>
+                <div class="files-locked">
+                    <div class="lock-icon">🔒</div>
+                    <h3>Раздел защищён паролем</h3>
+                    <p>Для доступа к файлам введи секретный код.<br>Он был выдан тебе за выполнение особого задания.</p>
+                    <div class="password-input">
+                        <input type="text" id="filesPassword" class="win95-input" placeholder="ВВЕДИ КОД" maxlength="20" autocomplete="off">
+                    </div>
+                    <button class="win95-btn primary" onclick="checkFilesPassword()">Разблокировать</button>
+                    <div class="login-status" id="filesStatus"></div>
+                    ${snakeWon
+                        ? '<div class="hint-note">💡 Подсказка: ты уже заработал этот код. Вспомни финальный экран игры «Змейка» на рабочем столе.</div>'
+                        : '<div class="hint-note" style="border-color: #ffaa00; color: #ffaa00; background: rgba(255, 170, 0, 0.08);">⚠️ Сначала пройди игру «Змейка» на рабочем столе — там ты получишь код.</div>'}
+                </div>
+            `;
+        }
+
+        function checkFilesPassword() {
+            const input = document.getElementById('filesPassword');
+            const status = document.getElementById('filesStatus');
+            const pwd = input.value.trim().toUpperCase().replace(/[_\s-]/g, '');
+
+            if (pwd === SNAKE_PASSWORD) {
+                playSound(1200, 0.2, 'sine');
+                try { localStorage.setItem('blacknetFilesUnlocked', 'true'); } catch(e) {}
+                status.className = 'login-status success';
+                status.innerText = '✓ Пароль верный. Загрузка файлов...';
+                setTimeout(() => renderFiles(document.getElementById('contentArea')), 800);
+            } else {
+                playSound(150, 0.25, 'sawtooth');
+                status.className = 'login-status error';
+                status.innerText = '❌ Неверный код. Попробуй ещё раз.';
+            }
+        }
+
+        function renderFilesUnlocked(area) {
+            area.innerHTML = `
+                <h1>📁 Файлы</h1>
+                <p class="subtitle">Личное дело агента DGYJura — доступ разрешён</p>
+                <div class="file-list">
+                    <div class="file-item" onclick="openFile('mission', this)">📄 mission_briefing.txt</div>
+                    <div class="file-item" onclick="openFile('contact', this)">📁 contact_info.dat</div>
+                    <div class="file-item" onclick="openFile('photo', this)">🔒 personal_photo.jpg</div>
+                    <div class="file-item" onclick="openFile('secret', this)">💌 secret_message.txt</div>
+                </div>
+                <div class="file-preview" id="filePreview">
+                    <div class="placeholder">← Выбери файл слева, чтобы прочитать</div>
+                </div>
+            `;
+        }
+
+        function openFile(key, el) {
+            playSound(500, 0.04);
+            document.querySelectorAll('.file-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+
+            const files = {
+                mission: `МИССИЯ #2009
+
+Цель: проверить Dundik на верность и знания.
+Проверки:
+  ✓ Логин в систему Windows
+  ✓ Пароль BlackNet
+  ✓ Змейка (30 яблок)
+
+Статус: ВЫПОЛНЕНО УСПЕШНО
+Оценка: 10/10`,
+                contact: `КОНТАКТЫ АГЕНТА DGYJura
+
+Email:    [СКРЫТО]
+Telegram: [СКРЫТО]
+Discord:  [СКРЫТО]
+
+Примечание: каналы связи доступны только после
+финального этапа квеста.`,
+                photo: `🔒 ACCESS DENIED
+
+Файл personal_photo.jpg зашифрован.
+Доступ только у агента DGYJura.
+
+Попробуй позже.`,
+                secret: `Здорово, Dundik!
+
+Если ты это читаешь — значит ты прошёл ВСЁ.
+Логин, пароль, Змейку и этот файл.
+Признаюсь, я не ожидал, что ты так быстро справишься.
+
+Ты знаешь меня лучше, чем я думал. И это... приятно.
+Спасибо, что ты рядом. По-настоящему.
+
+Скоро ты получишь кое-что особенное.
+Жди сигнала.
+
+P.S. А теперь закрой эту программу и посмотри на свой рабочий стол ещё раз. Кажется, там что-то появилось...
+
+— DGYJura`
+            };
+
+            document.getElementById('filePreview').innerText = files[key] || 'Файл пуст.';
+        }
+
+        // Автозапуск
+        playSound(600, 0.05);
     </script>
 </body>
 </html>
