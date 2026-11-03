@@ -58,6 +58,13 @@
             color: black;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.05s;
+        }
+
+        /* 🔴 ЧЕРВОНИЙ ХРЕСТИК ПРИ НАВЕДЕННІ */
+        .title-btn:hover {
+            background: #ff0000;
+            color: white;
         }
 
         .window-body {
@@ -289,7 +296,6 @@
 
             if (val.toLowerCase() === 'dundik') {
                 playSound(1000, 0.2, 'triangle');
-                // Перехід на робочий стіл
                 window.location.href = "desktop.html";
             } else {
                 playSound(180, 0.25, 'sawtooth');
