@@ -21,6 +21,17 @@
             position: relative;
         }
 
+        /* 🚫 Блокування кліків поки йде завантаження */
+        body.loading {
+            cursor: wait;
+        }
+        body.loading #desktop {
+            pointer-events: none;
+        }
+        body.loading .taskbar {
+            pointer-events: none;
+        }
+
         /* Загрузочне вікно */
         .boot-modal {
             position: absolute;
@@ -34,7 +45,7 @@
             border-bottom: 2px solid #000000;
             width: 380px;
             padding: 3px;
-            z-index: 999;
+            z-index: 9999;
         }
 
         .win95-title {
@@ -69,7 +80,6 @@
             display: none;
             height: calc(100vh - 34px);
             padding: 20px;
-            display: flex;
             flex-direction: column;
             flex-wrap: wrap;
             gap: 20px;
@@ -123,7 +133,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: move; /* Вказівник для перетягування */
+            cursor: move;
         }
 
         /* Кнопка закриття (з червоним ховером) */
@@ -141,6 +151,7 @@
             color: black;
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.05s;
         }
 
         .close-btn:hover {
@@ -223,11 +234,41 @@
             font-size: 11px;
             background: #c0c0c0;
         }
+
+        /* 🆕 Інформаційні індикатори в треї */
+        .tray-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tray-item {
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #808080;
+            border-bottom: 2px solid #808080;
+            padding: 3px 8px;
+            font-size: 11px;
+            background: #c0c0c0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: default;
+        }
+
+        .tray-item .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #00aa00;
+            box-shadow: 0 0 4px #00ff00;
+            display: inline-block;
+        }
     </style>
 </head>
-<body>
+<body class="loading">
 
-    <!-- 5-секундна розгрузка робочого столу -->
+    <!-- Загрузочне вікно робочого столу -->
     <div class="boot-modal" id="desktopLoader">
         <div class="win95-title">Завантаження профілю користувача...</div>
         <div style="padding: 15px;">
@@ -238,19 +279,16 @@
 
     <!-- Робочий стіл -->
     <div id="desktop">
-        <!-- 1. Ярлик Нотатки -->
         <div class="icon" onclick="openWindow('notepadWindow')">
             <div class="icon-img">📝</div>
             <span>Нотатки</span>
         </div>
 
-        <!-- 2. Ярлик Підказка (Файл записка) -->
         <div class="icon" onclick="openWindow('readmeWindow')">
             <div class="icon-img">📄</div>
             <span>read_me.txt</span>
         </div>
 
-        <!-- 3. Ярлик Секретний Термінал -->
         <div class="icon" onclick="openWindow('blacknetWindow')">
             <div class="icon-img">🕵️‍♂️</div>
             <span>BlackNet</span>
@@ -311,7 +349,18 @@
         <div class="start-btn">
             <span style="font-size: 14px;">🪟</span> <b>Start</b>
         </div>
-        <div class="tray" id="clockTray">12:00 PM</div>
+        <div class="tray-group">
+            <!-- 🆕 Індикатор захисту -->
+            <div class="tray-item" title="Захищене з'єднання встановлено">
+                <span class="dot"></span> SECURE
+            </div>
+            <!-- 🆕 Ім'я сесії -->
+            <div class="tray-item" title="Поточний користувач">
+                👤 Agent
+            </div>
+            <!-- Годинник -->
+            <div class="tray" id="clockTray">12:00 PM</div>
+        </div>
     </div>
 
     <script>
@@ -350,6 +399,8 @@
                     clearInterval(interval);
                     document.getElementById('desktopLoader').style.display = 'none';
                     document.getElementById('desktop').style.display = 'flex';
+                    // 🔓 Знімаємо блокування кліків
+                    document.body.classList.remove('loading');
                     playSound(900, 0.2);
                 }
             }, intervalTime);
@@ -370,11 +421,14 @@
         // Відкриття та закриття вікон
         let zIndexCounter = 100;
         function openWindow(id) {
+            // 🔒 Захист від кліку під час завантаження
+            if (document.body.classList.contains('loading')) return;
+
             playSound(600, 0.05);
             const win = document.getElementById(id);
             win.style.display = 'flex';
             zIndexCounter++;
-            win.style.zIndex = zIndexCounter; // Виводимо відкрите вікно на передній план
+            win.style.zIndex = zIndexCounter;
         }
 
         function closeWindow(id) {
@@ -394,7 +448,7 @@
                 status.innerText = 'УСПІХ! Доступ надано. Перенаправлення...';
                 setTimeout(() => {
                     alert("ВІТАЮ! Ти розблокував секретні урядові файли!");
-                    // Тут у майбутньому зробимо перехід на level3.html або наступний крок!
+                    // TODO: наступний рівень
                 }, 500);
             } else {
                 playSound(150, 0.2, 'sawtooth');
