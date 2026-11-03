@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlackNet Security System v2.0</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+        }
+
+        body {
+            background: #000;
+            color: #00ff00;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ═══ ЭКРАН ЛОГИНА ═══ */
+        .login-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        .terminal-window {
+            width: 480px;
+            background: #050b05;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+        }
+
+        .terminal-header {
+            background: linear-gradient(90deg, #001a00, #003300);
+            color: #00ff00;
+            padding: 6px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #00ff00;
+        }
+
+        .terminal-close {
+            background: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            width: 20px;
+            height: 18px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 11px;
+            line-height: 16px;
+        }
+
+        .terminal-close:hover {
+            background: #ff0000;
+            border-color: #ff0000;
+            color: white;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .danger-text {
+            color: #ff3333;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .info-text {
+            color: #00ff00;
+            margin-bottom: 6px;
+        }
+
+        .key-label {
+            color: #00cc00;
+            margin-bottom: 4px;
+            margin-top: 15px;
+            display: block;
+            font-size: 12px;
+        }
+
+        .key-input {
+            width: 100%;
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 10px;
+            font-size: 16px;
+            outline: none;
+            letter-spacing: 3px;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .key-input:focus {
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: #001a00;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 2px;
+        }
+
+        .submit-btn:hover {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .status-text {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .status-text.error { color: #ff3333; }
+        .status-text.success { color: #00ff00; }
+
+        /* ═══ ПРОГРЕСС ХАКА ═══ */
+        .hack-progress {
+            width: 100%;
+            height: 20px;
+            border: 2px solid #00ff00;
+            background: #001100;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .hack-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #003300, #00ff00);
+            transition: width 0.5s ease;
+        }
+
+        /* ═══ МОДАЛКИ ПОДТВЕРЖДЕНИЯ ═══ */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .confirm-box {
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            color: #ff3333;
+            padding: 20px 25px;
+            width: 440px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.9); }
+        }
+
+        .confirm-box h2 {
+            margin-bottom: 15px;
+            font-size: 15px;
+            text-align: center;
+            color: #ff6666;
+            letter-spacing: 1px;
+        }
+
+        .confirm-box p {
+            margin: 10px 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .confirm-box .warning {
+            color: #ffff00;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .confirm-btn {
+            padding: 8px 16px;
+            background: #000;
+            border: 2px solid #ff3333;
+            color: #ff3333;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .confirm-btn:hover {
+            background: #ff3333;
+            color: #000;
+        }
+
+        .confirm-btn.safe {
+            border-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .confirm-btn.safe:hover {
+            background: #00ff00;
+            color: #000;
+        }
+
+        /* ═══ ГЛАВНОЕ ПРИЛОЖЕНИЕ ═══ */
+        .main-app {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            flex-direction: column;
+            background: #0a0f0a;
+        }
+
+        .app-header {
+            background: linear-gradient(90deg, #001a00, #003300);
+            color: #00ff00;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #00ff00;
+        }
+
+        .app-close {
+            background: transparent;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            width: 22px;
+            height: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 11px;
+            line-height: 18px;
+        }
+
+        .app-close:hover {
+            background: #ff0000;
+            border-color: #ff0000;
+            color: white;
+        }
+
+        .app-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #0f150f;
+            border-right: 1px solid #003300;
+            padding: 10px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            padding: 12px 18px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            color: #00aa00;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-item:hover {
+            background: #14201a;
+            color: #00ff00;
+        }
+
+        .sidebar-item.active {
+            background: #14201a;
+            border-left-color: #00ff00;
+            color: #00ff00;
+        }
+
+        .badge {
+            background: #ff3333;
+            color: white;
+            border-radius: 10px;
+            padding: 1px 8px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            color: #00ff00;
+        }
+
+        .content h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            color: #00ff00;
+        }
+
+        .content .subtitle {
+            color: #00aa00;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        .info-box {
+            padding: 15px;
+            border: 1px dashed #00aa00;
+            background: #050b05;
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .info-box .label {
+            color: #00aa00;
+            font-size: 11px;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .info-box .value {
+            color: #00ff00;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            padding: 15px;
+            background: #050b05;
+            border: 1px solid #003300;
+            text-align: center;
+        }
+
+        .stat-card .num {
+            font-size: 28px;
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .stat-card .lbl {
+            font-size: 11px;
+            color: #00aa00;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ ЛОГИН ═══ -->
+    <div class="login-container" id="loginScreen">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <span>🕵️ BlackNet Security System v2.0</span>
+                <div class="terminal-close" onclick="location.href='desktop.html'">X</div>
+            </div>
+            <div class="terminal-body" id="loginBody">
+                <p class="danger-text">[RESTRICTED GOVERNMENT ACCESS]</p>
+                <p class="info-text">Для продолжения требуется верификация личности.</p>
+                <p class="info-text" style="color: #00aa00;">Введите дату рождения агента <b>DGYJura</b>:</p>
+
+                <form onsubmit="handleAccess(event)">
+                    <label class="key-label">KEY_INPUT></label>
+                    <input type="text" id="accessKey" class="key-input" autocomplete="off" placeholder="__.__.____" maxlength="10" autofocus>
+                    <button type="submit" class="submit-btn">ВОЙТИ</button>
+                </form>
+
+                <p id="statusText" class="status-text">Статус: Ожидание кода...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ МОДАЛКА 1 ═══ -->
+    <div class="confirm-overlay" id="confirmModal1">
+        <div class="confirm-box">
+            <h2>⚠️ ПРОВЕРКА БЕЗОПАСНОСТИ</h2>
+            <p>Ты уверен, что правильно указал дату рождения агента <b>DGYJura</b>?</p>
+            <p class="warning">❌ Внимание: при ошибке система будет заблокирована на 30 минут!</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn" onclick="backToInput()">НЕТ, ПРОВЕРИТЬ</button>
+                <button class="confirm-btn safe" onclick="showConfirm2()">ДА, Я УВЕРЕН</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ МОДАЛКА 2 ═══ -->
+    <div class="confirm-overlay" id="confirmModal2">
+        <div class="confirm-box">
+            <h2>⚠️ ПОСЛЕДНЯЯ ПРОВЕРКА</h2>
+            <p>Агент <b>DGYJura</b> НЕ прощает ошибок в личных данных!</p>
+            <p>После подтверждения изменить ответ будет <b>невозможно</b>.</p>
+            <p class="warning">Ты ДЕЙСТВИТЕЛЬНО уверен?</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn" onclick="backToInput()">ОТМЕНА</button>
+                <button class="confirm-btn safe" onclick="grantAccess()">ДА, ПОДТВЕРЖДАЮ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ПАНЕЛЬ ═══ -->
+    <div class="main-app" id="mainApp">
+        <div class="app-header">
+            <span>🕵️ BlackNet Security System v2.0 — Панель управления</span>
+            <div class="app-close" onclick="location.href='desktop.html'">X</div>
+        </div>
+        <div class="app-body">
+            <aside class="sidebar">
+                <div class="sidebar-item active" onclick="setActive(this)">🏠 Главная страница</div>
+                <div class="sidebar-item" onclick="setActive(this)">📋 Задания</div>
+                <div class="sidebar-item" onclick="setActive(this)">👥 Друзья</div>
+                <div class="sidebar-item" onclick="setActive(this)">💬 Сообщения <span class="badge">3</span></div>
+                <div class="sidebar-item" onclick="setActive(this)">📁 Файлы</div>
+                <div class="sidebar-item" onclick="setActive(this)">⚙️ Настройки</div>
+            </aside>
+            <main class="content">
+                <h1>Главная страница</h1>
+                <p class="subtitle">Доступ разрешён. Добро пожаловать, Dundik.</p>
+
+                <div class="info-box">
+                    <div class="label">СТАТУС СИСТЕМЫ</div>
+                    <div class="value">✓ Все системы работают в штатном режиме</div>
+                </div>
+
+                <div class="info-box">
+                    <div class="label">АКТИВНЫЙ АГЕНТ</div>
+                    <div class="value">👤 Dundik · Уровень доступа: Classified</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="num">3</div>
+                        <div class="lbl">НОВЫХ ЗАДАНИЙ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">12</div>
+                        <div class="lbl">ДРУЗЕЙ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="num">3</div>
+                        <div class="lbl">СООБЩЕНИЙ</div>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top: 20px;">
+                    <div class="label">📌 СЛЕДУЮЩИЙ ШАГ</div>
+                    <div class="value">Разделы в меню слева появятся в следующих обновлениях...</div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(freq, duration = 0.08, type = 'square') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.value = 0.03;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function handleAccess(e) {
+            e.preventDefault();
+            const val = document.getElementById('accessKey').value.trim();
+            const status = document.getElementById('statusText');
+
+            // Принимаем форматы: 05.05.2009, 5.5.2009, 05/05/2009, 05-05-2009, 05.05/2009
+            const normalized = val.replace(/[\/\-\s]/g, '.');
+            const isValid = /^0?5\.0?5\.2009$/.test(normalized);
+
+            if (isValid) {
+                playSound(800, 0.1);
+                // Показываем модалку 1
+                document.getElementById('confirmModal1').style.display = 'flex';
+            } else {
+                playSound(150, 0.25, 'sawtooth');
+                status.className = 'status-text error';
+                status.innerText = '❌ ОШИБКА: Неверная дата. Попробуй ещё раз.';
+            }
+        }
+
+        function backToInput() {
+            playSound(400, 0.05);
+            document.getElementById('confirmModal1').style.display = 'none';
+            document.getElementById('confirmModal2').style.display = 'none';
+            const input = document.getElementById('accessKey');
+            input.value = '';
+            input.focus();
+            document.getElementById('statusText').className = 'status-text';
+            document.getElementById('statusText').innerText = 'Статус: Ожидание кода...';
+        }
+
+        function showConfirm2() {
+            playSound(500, 0.08);
+            document.getElementById('confirmModal1').style.display = 'none';
+            document.getElementById('confirmModal2').style.display = 'flex';
+        }
+
+        function grantAccess() {
+            playSound(1000, 0.2, 'triangle');
+            document.getElementById('confirmModal2').style.display = 'none';
+
+            // Заменяем содержимое логина на прогресс "хака"
+            const body = document.getElementById('loginBody');
+            body.innerHTML = `
+                <p class="danger-text">[RESTRICTED GOVERNMENT ACCESS]</p>
+                <p class="info-text">✓ Проверка пройдена. Отправка данных на сервер...</p>
+                <div class="hack-progress">
+                    <div class="hack-progress-bar" id="hackBar"></div>
+                </div>
+                <p id="hackStatus" class="status-text">Инициализация протокола...</p>
+            `;
+
+            const steps = [
+                { pct: 15, msg: 'Подключение к защищённому каналу...' },
+                { pct: 35, msg: 'Сверка с базой данных агентов...' },
+                { pct: 55, msg: 'Проверка подлинности DGYJura...' },
+                { pct: 75, msg: 'Расшифровка протоколов связи...' },
+                { pct: 92, msg: 'Загрузка личного дела Dundik...' },
+                { pct: 100, msg: '✓ ДОСТУП РАЗРЕШЁН' }
+            ];
+
+            let i = 0;
+            function nextStep() {
+                if (i >= steps.length) {
+                    setTimeout(() => {
+                        document.getElementById('loginScreen').style.display = 'none';
+                        document.getElementById('mainApp').style.display = 'flex';
+                        playSound(1200, 0.3, 'sine');
+                    }, 700);
+                    return;
+                }
+                const s = steps[i++];
+                document.getElementById('hackBar').style.width = s.pct + '%';
+                const st = document.getElementById('hackStatus');
+                st.innerText = s.msg;
+                if (s.pct === 100) {
+                    st.className = 'status-text success';
+                    st.style.color = '#00ff00';
+                }
+                playSound(400 + s.pct * 4, 0.04);
+                setTimeout(nextStep, 700);
+            }
+            nextStep();
+        }
+
+        function setActive(el) {
+            // Пока — только визуальное выделение, без навигации
+            playSound(600, 0.04);
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+</html>
