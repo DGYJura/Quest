@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Змейка - Windows 95</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: #c0c0c0;
+            height: 100vh;
+            overflow: hidden;
+            padding: 3px;
+        }
+
+        .win95-window {
+            width: 100%;
+            height: 100%;
+            background: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white;
+            padding: 3px 6px;
+            font-weight: bold;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .title-close {
+            background: #c0c0c0;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            width: 16px;
+            height: 14px;
+            font-size: 9px;
+            line-height: 12px;
+            text-align: center;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .title-close:hover {
+            background: #ff0000 !important;
+            color: white !important;
+        }
+
+        /* Меню сверху */
+        .menu-bar {
+            background: #c0c0c0;
+            padding: 2px 4px;
+            font-size: 12px;
+            border-bottom: 1px solid #808080;
+            display: flex;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .menu-item {
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #000080;
+            color: white;
+        }
+
+        /* Игровая зона */
+        .game-area {
+            flex: 1;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 10px;
+            padding: 4px 8px;
+            background: #c0c0c0;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .stats-bar span {
+            color: #000080;
+        }
+
+        .canvas-wrap {
+            flex: 1;
+            background: #000080;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #snakeCanvas {
+            background: #000;
+            display: block;
+            border: 1px solid #000;
+        }
+
+        .hint-bar {
+            text-align: center;
+            font-size: 11px;
+            color: #444;
+            padding: 3px;
+            flex-shrink: 0;
+        }
+
+        .hint-bar b {
+            color: #000080;
+        }
+
+        /* Оверлей победы/поражения */
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 4px; left: 4px; right: 4px; bottom: 4px;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            z-index: 10;
+        }
+
+        .overlay .big-icon {
+            font-size: 50px;
+            margin-bottom: 8px;
+        }
+
+        .overlay h2 {
+            font-size: 18px;
+            margin: 6px 0;
+            letter-spacing: 1px;
+        }
+
+        .overlay h2.win { color: #008000; }
+        .overlay h2.lose { color: #800000; }
+
+        .overlay p {
+            font-size: 12px;
+            color: #333;
+            margin: 4px 0;
+        }
+
+        .code-box {
+            margin: 12px 0;
+            padding: 10px 20px;
+            background: #000080;
+            color: white;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+        }
+
+        .code-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+
+        .code-value {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-top: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .win95-btn {
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 6px 18px;
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+            color: black;
+            min-width: 100px;
+            margin-top: 8px;
+        }
+
+        .win95-btn:active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="win95-window">
+        <div class="title-bar">
+            <span>🐍 Змейка</span>
+            <div class="title-close" onclick="window.close()">X</div>
+        </div>
+
+        <div class="menu-bar">
+            <div class="menu-item" onclick="restartSnake()">Игра</div>
+            <div class="menu-item" onclick="restartSnake()">Новая</div>
+            <div class="menu-item" onclick="window.close()">Выход</div>
+        </div>
+
+        <div class="game-area">
+            <div class="stats-bar">
+                🍎 ЯБЛОКИ: <span id="snakeScore">0</span> / 15
+            </div>
+
+            <div class="canvas-wrap">
+                <canvas id="snakeCanvas" width="440" height="440" tabindex="0"></canvas>
+                <div class="overlay" id="overlay"></div>
+            </div>
+
+            <div class="hint-bar">
+                Управление: <b>↑ ↓ ← →</b> · Собери <b>15 яблок</b> чтобы получить код
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══ НАСТРОЙКИ ═══
+        const GRID_SIZE = 22;
+        const CELL = 20;
+        const TARGET_SCORE = 15;
+        const WIN_CODE = 'DGYJURA15';
+
+        const canvas = document.getElementById('snakeCanvas');
+        canvas.width = GRID_SIZE * CELL;
+        canvas.height = GRID_SIZE * CELL;
+        const ctx = canvas.getContext('2d');
+
+        let snake = [];
+        let snakeDirection = {x: 1, y: 0};
+        let nextDirection = {x: 1, y: 0};
+        let apple = {x: 0, y: 0};
+        let snakeScore = 0;
+        let snakeInterval = null;
+        let gameRunning = false;
+
+        // Звуки
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(freq, duration = 0.08, type = 'square') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.value = 0.03;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function initSnake() {
+            snake = [
+                {x: 5, y: Math.floor(GRID_SIZE / 2)},
+                {x: 4, y: Math.floor(GRID_SIZE / 2)},
+                {x: 3, y: Math.floor(GRID_SIZE / 2)}
+            ];
+            snakeDirection = {x: 1, y: 0};
+            nextDirection = {x: 1, y: 0};
+            snakeScore = 0;
+            apple = spawnApple();
+            gameRunning = true;
+            document.getElementById('snakeScore').innerText = '0';
+            document.getElementById('overlay').style.display = 'none';
+            canvas.focus();
+
+            if (snakeInterval) clearInterval(snakeInterval);
+            snakeInterval = setInterval(snakeTick, 140);
+            drawSnake();
+        }
+
+        function restartSnake() {
+            playSound(600, 0.05);
+            initSnake();
+        }
+
+        function spawnApple() {
+            let pos;
+            let attempts = 0;
+            do {
+                pos = {
+                    x: Math.floor(Math.random() * GRID_SIZE),
+                    y: Math.floor(Math.random() * GRID_SIZE)
+                };
+                attempts++;
+            } while (snake.some(s => s.x === pos.x && s.y === pos.y) && attempts < 500);
+            return pos;
+        }
+
+        function snakeTick() {
+            if (!gameRunning) return;
+
+            snakeDirection = nextDirection;
+            const head = {
+                x: snake[0].x + snakeDirection.x,
+                y: snake[0].y + snakeDirection.y
+            };
+
+            // Стены
+            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                return snakeGameOver();
+            }
+
+            // Себя
+            if (snake.some(s => s.x === head.x && s.y === head.y)) {
+                return snakeGameOver();
+            }
+
+            snake.unshift(head);
+
+            if (head.x === apple.x && head.y === apple.y) {
+                snakeScore++;
+                document.getElementById('snakeScore').innerText = snakeScore;
+                playSound(800 + snakeScore * 20, 0.05);
+
+                if (snakeScore >= TARGET_SCORE) {
+                    return snakeWin();
+                }
+                apple = spawnApple();
+            } else {
+                snake.pop();
+            }
+
+            drawSnake();
+        }
+
+        function drawSnake() {
+            // Фон
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, GRID_SIZE * CELL, GRID_SIZE * CELL);
+
+            // Лёгкая сетка
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= GRID_SIZE; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * CELL, 0);
+                ctx.lineTo(i * CELL, GRID_SIZE * CELL);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, i * CELL);
+                ctx.lineTo(GRID_SIZE * CELL, i * CELL);
+                ctx.stroke();
+            }
+
+            // Яблоко
+            ctx.fillStyle = '#ff3333';
+            ctx.beginPath();
+            ctx.arc(apple.x * CELL + CELL/2, apple.y * CELL + CELL/2, CELL/2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+            // Блик яблока
+            ctx.fillStyle = 'rgba(255, 200, 200, 0.6)';
+            ctx.beginPath();
+            ctx.arc(apple.x * CELL + CELL/2 - 3, apple.y * CELL + CELL/2 - 3, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Змейка
+            snake.forEach((seg, i) => {
+                if (i === 0) {
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillRect(seg.x * CELL + 1, seg.y * CELL + 1, CELL - 2, CELL - 2);
+                    // Глазки
+                    ctx.fillStyle = '#000080';
+                    ctx.fillRect(seg.x * CELL + 5, seg.y * CELL + 5, 3, 3);
+                    ctx.fillRect(seg.x * CELL + 12, seg.y * CELL + 5, 3, 3);
+                } else {
+                    ctx.fillStyle = '#00aa00';
+                    ctx.fillRect(seg.x * CELL + 2, seg.y * CELL + 2, CELL - 4, CELL - 4);
+                }
+            });
+        }
+
+        function snakeGameOver() {
+            gameRunning = false;
+            clearInterval(snakeInterval);
+            snakeInterval = null;
+            playSound(150, 0.3, 'sawtooth');
+
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+            overlay.innerHTML = `
+                <div class="big-icon">💀</div>
+                <h2 class="lose">GAME OVER</h2>
+                <p>Ты собрал <b>${snakeScore}</b> из ${TARGET_SCORE} яблок</p>
+                <button class="win95-btn" onclick="restartSnake()">Попробовать снова</button>
+            `;
+        }
+
+        function snakeWin() {
+            gameRunning = false;
+            clearInterval(snakeInterval);
+            snakeInterval = null;
+            playSound(1500, 0.3, 'sine');
+
+            // Сохраняем, что игрок заработал пароль
+            try {
+                localStorage.setItem('snakeWon', 'true');
+            } catch(e) {}
+
+            const overlay = document.getElementById('overlay');
+            overlay.style.display = 'flex';
+            overlay.innerHTML = `
+                <div class="big-icon">🏆</div>
+                <h2 class="win">ПОБЕДА!</h2>
+                <p>Ты собрал все ${TARGET_SCORE} яблок</p>
+                <div class="code-box">
+                    <div class="code-label">СЕКРЕТНЫЙ КОД:</div>
+                    <div class="code-value">${WIN_CODE}</div>
+                </div>
+                <p style="font-size: 11px; color: #000080;">Используй его в BlackNet → Файлы</p>
+                <button class="win95-btn" onclick="restartSnake()">Играть снова</button>
+            `;
+        }
+
+        // Управление
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+
+            const key = e.key;
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(key)) {
+                e.preventDefault();
+            }
+
+            if (key === 'ArrowUp' && snakeDirection.y !== 1) nextDirection = {x: 0, y: -1};
+            if (key === 'ArrowDown' && snakeDirection.y !== -1) nextDirection = {x: 0, y: 1};
+            if (key === 'ArrowLeft' && snakeDirection.x !== 1) nextDirection = {x: -1, y: 0};
+            if (key === 'ArrowRight' && snakeDirection.x !== -1) nextDirection = {x: 1, y: 0};
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            canvas.focus();
+        });
+
+        // Автозапуск
+        initSnake();
+    </script>
+</body>
+</html>
