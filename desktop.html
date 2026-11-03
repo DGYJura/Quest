@@ -71,12 +71,13 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            flex-wrap: wrap;
             gap: 20px;
-            align-items: flex-start;
+            align-content: flex-start;
         }
 
         .icon {
-            width: 75px;
+            width: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -85,7 +86,8 @@
             color: white;
             font-size: 11px;
             text-shadow: 1px 1px 1px black;
-            padding: 5px;
+            padding: 6px;
+            border-radius: 2px;
         }
 
         .icon:hover {
@@ -98,14 +100,10 @@
             margin-bottom: 4px;
         }
 
-        /* Вікно програми Нотатки */
+        /* Універсальне перетягуване вікно */
         .window {
             display: none;
             position: absolute;
-            top: 100px;
-            left: 150px;
-            width: 400px;
-            height: 300px;
             background: #c0c0c0;
             border-top: 2px solid #ffffff;
             border-left: 2px solid #ffffff;
@@ -125,8 +123,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: move; /* Вказівник для перетягування */
         }
 
+        /* Кнопка закриття (з червоним ховером) */
         .close-btn {
             background: #c0c0c0;
             border-top: 1px solid #ffffff;
@@ -143,6 +143,11 @@
             cursor: pointer;
         }
 
+        .close-btn:hover {
+            background: #ff0000 !important;
+            color: white !important;
+        }
+
         .notepad-textarea {
             width: 100%;
             height: 100%;
@@ -153,6 +158,29 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 13px;
             resize: none;
+        }
+
+        /* Секретний термо-термінал BlackNet */
+        .blacknet-body {
+            background: #050b05;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .win95-input {
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 4px 6px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
         }
 
         /* Панель задач (Taskbar) */
@@ -210,21 +238,71 @@
 
     <!-- Робочий стіл -->
     <div id="desktop">
-        <!-- Ярлик програми Нотатки -->
-        <div class="icon" onclick="openNotepad()">
+        <!-- 1. Ярлик Нотатки -->
+        <div class="icon" onclick="openWindow('notepadWindow')">
             <div class="icon-img">📝</div>
             <span>Нотатки</span>
         </div>
+
+        <!-- 2. Ярлик Підказка (Файл записка) -->
+        <div class="icon" onclick="openWindow('readmeWindow')">
+            <div class="icon-img">📄</div>
+            <span>read_me.txt</span>
+        </div>
+
+        <!-- 3. Ярлик Секретний Термінал -->
+        <div class="icon" onclick="openWindow('blacknetWindow')">
+            <div class="icon-img">🕵️‍♂️</div>
+            <span>BlackNet</span>
+        </div>
     </div>
 
-    <!-- Вікно програми «Нотатки» -->
-    <div class="window" id="notepadWindow">
-        <div class="window-header">
-            <span>📝 Блокнот - Записи квесту</span>
-            <div class="close-btn" onclick="closeNotepad()">X</div>
+    <!-- 📝 ВІКНО 1: Блокнот -->
+    <div class="window" id="notepadWindow" style="top: 80px; left: 100px; width: 400px; height: 280px;">
+        <div class="window-header" onmousedown="dragMouseDown(event, 'notepadWindow')">
+            <span>📝 Блокнот</span>
+            <div class="close-btn" onclick="closeWindow('notepadWindow')">X</div>
         </div>
         <div style="flex: 1; padding: 2px; background: white;">
             <textarea class="notepad-textarea" placeholder="Тут ти можеш записувати підказки, коди та свої думки..."></textarea>
+        </div>
+    </div>
+
+    <!-- 📄 ВІКНО 2: Записка з підказкою -->
+    <div class="window" id="readmeWindow" style="top: 120px; left: 180px; width: 360px; height: 220px;">
+        <div class="window-header" onmousedown="dragMouseDown(event, 'readmeWindow')">
+            <span>📄 read_me.txt - Блокнот</span>
+            <div class="close-btn" onclick="closeWindow('readmeWindow')">X</div>
+        </div>
+        <div style="flex: 1; padding: 10px; background: white; font-family: monospace; font-size: 12px; overflow-y: auto;">
+            <p><strong>ЗАПИСКА ВІД АГЕНТА:</strong></p>
+            <br>
+            <p>Вітаю, Dundik! Якщо ти зайшов сюди, значить перша перевірка пройдена.</p>
+            <br>
+            <p>Для входу в секретну урядову програму <strong>BlackNet</strong> потрібен Access Key.</p>
+            <p>🔑 Підказка коду: <i>"Рік випуску цієї системи Windows"</i> (4 цифри).</p>
+        </div>
+    </div>
+
+    <!-- 🕵️‍♂️ ВІКНО 3: BlackNet Terminal -->
+    <div class="window" id="blacknetWindow" style="top: 60px; left: 240px; width: 420px; height: 300px;">
+        <div class="window-header" style="background: linear-gradient(90deg, #111, #444);" onmousedown="dragMouseDown(event, 'blacknetWindow')">
+            <span>🕵️‍♂️ BlackNet Security System v2.0</span>
+            <div class="close-btn" onclick="closeWindow('blacknetWindow')">X</div>
+        </div>
+        <div class="blacknet-body">
+            <div>
+                <p style="color: #ff3333; font-weight: bold; margin-bottom: 10px;">[RESTRICTED GOVERNMENT ACCESS]</p>
+                <p style="font-size: 12px; margin-bottom: 5px;">Введіть 4-значний Access Key для розблокування секретного досьє:</p>
+            </div>
+
+            <form onsubmit="handleBlacknetAccess(event)">
+                <label style="font-size: 11px; display: block; margin-bottom: 4px;">KEY_INPUT></label>
+                <input type="text" id="blacknetKey" class="win95-input" autocomplete="off" maxlength="4" placeholder="____">
+                <button type="submit" style="display: none;"></button>
+            </form>
+
+            <p id="blacknetStatus" style="font-size: 11px; color: #888;">Статус: Очікування коду...</p>
         </div>
     </div>
 
@@ -239,12 +317,12 @@
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        function playSound(freq, duration = 0.08) {
+        function playSound(freq, duration = 0.08, type = 'square') {
             try {
                 if (audioCtx.state === 'suspended') audioCtx.resume();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'square';
+                osc.type = type;
                 osc.frequency.value = freq;
                 gain.gain.value = 0.03;
                 osc.connect(gain);
@@ -277,7 +355,7 @@
             }, intervalTime);
         }
 
-        // Годинник справа внизу (Real-time clock)
+        // Годинник у панелі задач
         function updateClock() {
             const now = new Date();
             let hours = now.getHours();
@@ -289,14 +367,73 @@
             document.getElementById('clockTray').innerText = hours + ':' + minutes + ' ' + ampm;
         }
 
-        function openNotepad() {
+        // Відкриття та закриття вікон
+        let zIndexCounter = 100;
+        function openWindow(id) {
             playSound(600, 0.05);
-            document.getElementById('notepadWindow').style.display = 'flex';
+            const win = document.getElementById(id);
+            win.style.display = 'flex';
+            zIndexCounter++;
+            win.style.zIndex = zIndexCounter; // Виводимо відкрите вікно на передній план
         }
 
-        function closeNotepad() {
+        function closeWindow(id) {
             playSound(400, 0.05);
-            document.getElementById('notepadWindow').style.display = 'none';
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Логіка підтвердження коду в BlackNet
+        function handleBlacknetAccess(e) {
+            e.preventDefault();
+            const key = document.getElementById('blacknetKey').value.trim();
+            const status = document.getElementById('blacknetStatus');
+
+            if (key === '1995') {
+                playSound(1000, 0.2, 'triangle');
+                status.style.color = '#00ff00';
+                status.innerText = 'УСПІХ! Доступ надано. Перенаправлення...';
+                setTimeout(() => {
+                    alert("ВІТАЮ! Ти розблокував секретні урядові файли!");
+                    // Тут у майбутньому зробимо перехід на level3.html або наступний крок!
+                }, 500);
+            } else {
+                playSound(150, 0.2, 'sawtooth');
+                status.style.color = '#ff3333';
+                status.innerText = '❌ ПОМИЛКА: Невірний Access Key!';
+            }
+        }
+
+        // 🖱️ ЛОГІКА ПЕРЕТЯГУВАННЯ ВІКОН (Drag and Drop)
+        let activeWin = null;
+        let offsetX = 0, offsetY = 0;
+
+        function dragMouseDown(e, winId) {
+            e = e || window.event;
+            e.preventDefault();
+            activeWin = document.getElementById(winId);
+            zIndexCounter++;
+            activeWin.style.zIndex = zIndexCounter;
+
+            offsetX = e.clientX - activeWin.offsetLeft;
+            offsetY = e.clientY - activeWin.offsetTop;
+
+            document.onmousemove = elementDrag;
+            document.onmouseup = closeDragElement;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            if (activeWin) {
+                activeWin.style.left = (e.clientX - offsetX) + "px";
+                activeWin.style.top = (e.clientY - offsetY) + "px";
+            }
+        }
+
+        function closeDragElement() {
+            document.onmousemove = null;
+            document.onmouseup = null;
+            activeWin = null;
         }
 
         setInterval(updateClock, 1000);
