@@ -14,7 +14,7 @@
         }
 
         body {
-            background-color: #008080; /* Класичний фоновий колір Windows 95 */
+            background-color: #008080;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -22,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* 3D-рамки Windows 95 */
         .win95-window {
             background: #c0c0c0;
             border-top: 2px solid #ffffff;
@@ -67,7 +66,6 @@
             font-size: 12px;
         }
 
-        /* Ретро-кнопка Windows 95 */
         .win95-btn {
             background: #c0c0c0;
             border-top: 2px solid #ffffff;
@@ -89,7 +87,6 @@
             padding: 7px 13px 5px 15px;
         }
 
-        /* Поле вводу */
         .win95-input {
             background: #ffffff;
             border-top: 2px solid #808080;
@@ -102,7 +99,6 @@
             width: 100%;
         }
 
-        /* Прогрес-бар Windows 95 */
         .progress-container {
             border-top: 2px solid #808080;
             border-left: 2px solid #808080;
@@ -136,7 +132,7 @@
         .hint-window {
             display: none;
             margin-top: 12px;
-            background: #ffffe1; /* Жовтий папірець підказок Windows */
+            background: #ffffe1;
             border: 1px solid #000000;
             padding: 8px;
             font-family: 'Courier New', Courier, monospace;
@@ -160,8 +156,7 @@
         </div>
 
         <div class="window-body">
-            
-            <!-- Крок 1: Кнопка Старт -->
+            <!-- Крок 1: Старт -->
             <div id="startScreen" style="text-align: center; padding: 20px 0;">
                 <div class="icon-layout" style="justify-content: center;">
                     <span class="pc-icon">💻</span>
@@ -175,7 +170,7 @@
                 </button>
             </div>
 
-            <!-- Крок 2: 5-секундна Загрузка Win95 -->
+            <!-- Крок 2: Загрузка Win95 -->
             <div id="loaderScreen" style="display: none;">
                 <div class="icon-layout">
                     <span class="pc-icon">⚙️</span>
@@ -184,13 +179,10 @@
                         <p style="color: #666; font-size: 11px; margin-top: 3px;" id="subStatus">C:\WINDOWS\SYSTEM32\BOOT.SYS</p>
                     </div>
                 </div>
-
-                <div class="progress-container" id="progressContainer">
-                    <!-- Кубики завантаження будуть з'являтися динамічно -->
-                </div>
+                <div class="progress-container" id="progressContainer"></div>
             </div>
 
-            <!-- Крок 3: Вікно входу (Logon) -->
+            <!-- Крок 3: Вікно входу -->
             <div id="loginScreen" style="display: none;">
                 <div class="icon-layout">
                     <span class="pc-icon">🔑</span>
@@ -214,21 +206,19 @@
 
                 <p id="errorMsg" class="error-dialog">⚠️ Помилка: Доступ відхилено. Невірне ім'я користувача.</p>
 
-                <!-- Підказка з HEX-шифром -->
+                <!-- Підказка зі зсувом літер -->
                 <div id="hintBox" class="hint-window">
-                    <p><b>📜 Дамп пам'яті [HEX-ШИФР]:</b></p>
-                    <p style="margin: 4px 0; color: #000080; font-size: 13px;"><b>44 75 6e 64 69 6b</b></p>
+                    <p>🔑 <strong>Шифровка системи:</strong></p>
+                    <p style="margin: 4px 0; font-size: 13px;">Зашифрований нік: <strong>"Eveefl"</strong></p>
                     <p style="font-size: 10px; color: #555;">
-                        (Шукач, переведи ці байти Hex в ASCII-символи через онлайн-декодер або за таблицею символів!)
+                        (Підказка: Змісти кожну літеру на 1 крок назад в англійському алфавіті E->D, v->u...)
                     </p>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        // Ретро-звуки через Web Audio API
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playSound(freq, duration = 0.08, type = 'square') {
@@ -246,10 +236,8 @@
             } catch(e) {}
         }
 
-        // Запуск розгрузки на 5 секунд
         function startBootSequence() {
             playSound(600, 0.05);
-
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('loaderScreen').style.display = 'block';
             document.getElementById('titleText').innerText = "Windows 95 - Loading System...";
@@ -267,13 +255,11 @@
             ];
 
             let step = 0;
-            const totalSteps = 18; // Скільки синіх блоків у прогрес-барі
-            const intervalTime = 5000 / totalSteps; // Рівно 5 секунд
+            const totalSteps = 18;
+            const intervalTime = 5000 / totalSteps;
 
             const interval = setInterval(() => {
                 step++;
-                
-                // Додаємо кубик у прогрес-бар
                 const block = document.createElement('div');
                 block.className = 'progress-block';
                 progressContainer.appendChild(block);
@@ -296,7 +282,6 @@
             }, intervalTime);
         }
 
-        // Перевірка введеного пароля/ніка
         function handleLogin(event) {
             event.preventDefault();
             const val = document.getElementById('username').value.trim();
@@ -304,16 +289,14 @@
 
             if (val.toLowerCase() === 'dundik') {
                 playSound(1000, 0.2, 'triangle');
-                alert("УСПІХ! Доступ надано. Вітаємо у системі, Dundik!");
-                // Перехід на наступну сторінку квесту (наприклад, level2.html):
-                // window.location.href = "level2.html";
+                // Перехід на робочий стіл
+                window.location.href = "desktop.html";
             } else {
                 playSound(180, 0.25, 'sawtooth');
                 errorMsg.style.display = 'block';
             }
         }
 
-        // Перемикач підказки
         function toggleHint() {
             playSound(500, 0.04);
             const box = document.getElementById('hintBox');
