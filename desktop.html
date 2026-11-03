@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,28 +21,19 @@
             position: relative;
         }
 
-        /* 🚫 Блокування кліків поки йде завантаження */
-        body.loading {
-            cursor: wait;
-        }
-        body.loading #desktop {
-            pointer-events: none;
-        }
-        body.loading .taskbar {
-            pointer-events: none;
-        }
+        body.loading { cursor: wait; }
+        body.loading #desktop { pointer-events: none; }
+        body.loading .taskbar { pointer-events: none; }
 
-        /* Загрузочне вікно */
         .boot-modal {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: #c0c0c0;
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
             width: 380px;
             padding: 3px;
             z-index: 9999;
@@ -59,23 +50,18 @@
         .progress-container {
             border-top: 2px solid #808080;
             border-left: 2px solid #808080;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
             height: 22px;
-            background: #ffffff;
+            background: #fff;
             margin-top: 15px;
             padding: 2px;
             display: flex;
             gap: 2px;
         }
 
-        .progress-block {
-            width: 10px;
-            height: 100%;
-            background: #000080;
-        }
+        .progress-block { width: 10px; height: 100%; background: #000080; }
 
-        /* Робочий стіл */
         #desktop {
             display: none;
             height: calc(100vh - 34px);
@@ -102,23 +88,19 @@
 
         .icon:hover {
             background: rgba(0, 0, 128, 0.4);
-            border: 1px dotted #ffffff;
+            border: 1px dotted #fff;
         }
 
-        .icon-img {
-            font-size: 32px;
-            margin-bottom: 4px;
-        }
+        .icon-img { font-size: 32px; margin-bottom: 4px; }
 
-        /* Універсальне перетягуване вікно */
         .window {
             display: none;
             position: absolute;
             background: #c0c0c0;
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
             flex-direction: column;
             z-index: 100;
@@ -136,13 +118,12 @@
             cursor: move;
         }
 
-        /* Кнопка закриття (з червоним ховером) */
         .close-btn {
             background: #c0c0c0;
-            border-top: 1px solid #ffffff;
-            border-left: 1px solid #ffffff;
-            border-right: 1px solid #000000;
-            border-bottom: 1px solid #000000;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
             width: 16px;
             height: 14px;
             font-size: 9px;
@@ -162,7 +143,7 @@
         .notepad-textarea {
             width: 100%;
             height: 100%;
-            background: #ffffff;
+            background: #fff;
             border: none;
             outline: none;
             padding: 8px;
@@ -171,51 +152,26 @@
             resize: none;
         }
 
-        /* Секретний термо-термінал BlackNet */
-        .blacknet-body {
-            background: #050b05;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 15px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .win95-input {
-            background: #000;
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            padding: 4px 6px;
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-            width: 100%;
-        }
-
-        /* Панель задач (Taskbar) */
         .taskbar {
             position: absolute;
-            bottom: 0;
-            left: 0;
+            bottom: 0; left: 0;
             width: 100%;
             height: 34px;
             background: #c0c0c0;
-            border-top: 2px solid #ffffff;
+            border-top: 2px solid #fff;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 2px 4px;
-            z-index: 1000;
+            z-index: 5000;
         }
 
         .start-btn {
             background: #c0c0c0;
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
             padding: 2px 8px;
             font-weight: bold;
             font-size: 12px;
@@ -225,17 +181,23 @@
             cursor: pointer;
         }
 
+        .start-btn.active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+
         .tray {
             border-top: 2px solid #808080;
             border-left: 2px solid #808080;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
             padding: 3px 10px;
             font-size: 11px;
             background: #c0c0c0;
         }
 
-        /* 🆕 Інформаційні індикатори в треї */
         .tray-group {
             display: flex;
             align-items: center;
@@ -243,8 +205,8 @@
         }
 
         .tray-item {
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
             border-right: 2px solid #808080;
             border-bottom: 2px solid #808080;
             padding: 3px 8px;
@@ -264,24 +226,173 @@
             box-shadow: 0 0 4px #00ff00;
             display: inline-block;
         }
+
+        /* 🪟 START MENU */
+        .start-menu {
+            display: none;
+            position: absolute;
+            bottom: 34px;
+            left: 2px;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            width: 220px;
+            z-index: 6000;
+            padding: 3px;
+        }
+
+        .start-menu-header {
+            background: linear-gradient(180deg, #000080, #1084d0);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            padding: 6px 4px;
+            letter-spacing: 2px;
+        }
+
+        .start-menu-body {
+            display: flex;
+        }
+
+        .start-menu-item {
+            padding: 8px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .start-menu-item:hover {
+            background: #000080;
+            color: white;
+        }
+
+        .start-menu-divider {
+            height: 2px;
+            background: #808080;
+            margin: 3px 0;
+            border-bottom: 1px solid #fff;
+        }
+
+        /* Диалог выключения */
+        .shutdown-modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 7000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .shutdown-window {
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 3px;
+            width: 380px;
+        }
+
+        .shutdown-body {
+            padding: 20px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .shutdown-body .pc-big {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .shutdown-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .win95-btn {
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 6px 18px;
+            font-size: 12px;
+            cursor: pointer;
+            outline: none;
+            color: black;
+            min-width: 80px;
+        }
+
+        .win95-btn:active {
+            border-top: 2px solid #000;
+            border-left: 2px solid #000;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+        }
+
+        /* Чёрный экран */
+        .power-off-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #000;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #333;
+        }
+
+        .power-btn {
+            background: transparent;
+            border: 2px solid #333;
+            color: #333;
+            font-size: 64px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .power-btn:hover {
+            color: #00ff00;
+            border-color: #00ff00;
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        .power-off-screen p {
+            margin-top: 20px;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 <body class="loading">
 
-    <!-- Загрузочне вікно робочого столу -->
     <div class="boot-modal" id="desktopLoader">
-        <div class="win95-title">Завантаження профілю користувача...</div>
+        <div class="win95-title">Загрузка профиля пользователя...</div>
         <div style="padding: 15px;">
-            <p style="font-size: 12px;">Підготовка робочого столу для Dundik...</p>
+            <p style="font-size: 12px;">Подготовка рабочего стола для Dundik...</p>
             <div class="progress-container" id="progressContainer"></div>
         </div>
     </div>
 
-    <!-- Робочий стіл -->
     <div id="desktop">
         <div class="icon" onclick="openWindow('notepadWindow')">
             <div class="icon-img">📝</div>
-            <span>Нотатки</span>
+            <span>Заметки</span>
         </div>
 
         <div class="icon" onclick="openWindow('readmeWindow')">
@@ -289,78 +400,98 @@
             <span>read_me.txt</span>
         </div>
 
-        <div class="icon" onclick="openWindow('blacknetWindow')">
+        <div class="icon" onclick="if(!document.body.classList.contains('loading')) window.location.href='blacknet.html'">
             <div class="icon-img">🕵️‍♂️</div>
             <span>BlackNet</span>
         </div>
     </div>
 
-    <!-- 📝 ВІКНО 1: Блокнот -->
+    <!-- Заметки -->
     <div class="window" id="notepadWindow" style="top: 80px; left: 100px; width: 400px; height: 280px;">
         <div class="window-header" onmousedown="dragMouseDown(event, 'notepadWindow')">
             <span>📝 Блокнот</span>
             <div class="close-btn" onclick="closeWindow('notepadWindow')">X</div>
         </div>
         <div style="flex: 1; padding: 2px; background: white;">
-            <textarea class="notepad-textarea" placeholder="Тут ти можеш записувати підказки, коди та свої думки..."></textarea>
+            <textarea class="notepad-textarea" placeholder="Здесь можно записывать подсказки, коды и свои мысли..."></textarea>
         </div>
     </div>
 
-    <!-- 📄 ВІКНО 2: Записка з підказкою -->
-    <div class="window" id="readmeWindow" style="top: 120px; left: 180px; width: 360px; height: 220px;">
+    <!-- Записка -->
+    <div class="window" id="readmeWindow" style="top: 120px; left: 180px; width: 380px; height: 240px;">
         <div class="window-header" onmousedown="dragMouseDown(event, 'readmeWindow')">
             <span>📄 read_me.txt - Блокнот</span>
             <div class="close-btn" onclick="closeWindow('readmeWindow')">X</div>
         </div>
         <div style="flex: 1; padding: 10px; background: white; font-family: monospace; font-size: 12px; overflow-y: auto;">
-            <p><strong>ЗАПИСКА ВІД АГЕНТА:</strong></p>
+            <p><strong>ЗАПИСКА ОТ АГЕНТА:</strong></p>
             <br>
-            <p>Вітаю, Dundik! Якщо ти зайшов сюди, значить перша перевірка пройдена.</p>
+            <p>Привет, Dundik! Если ты зашёл сюда — значит первая проверка пройдена.</p>
             <br>
-            <p>Для входу в секретну урядову програму <strong>BlackNet</strong> потрібен Access Key.</p>
-            <p>🔑 Підказка коду: <i>"Рік випуску цієї системи Windows"</i> (4 цифри).</p>
+            <p>Для входа в секретную программу <strong>BlackNet</strong> нужен специальный код.</p>
+            <p>🔑 Подсказка: <i>"День рождения агента DGYJura"</i></p>
+            <p>Формат: <strong>ДД.ММ.РРРР</strong></p>
+            <br>
+            <p>Если ты настоящий друг — ты помнишь эту дату.</p>
         </div>
     </div>
 
-    <!-- 🕵️‍♂️ ВІКНО 3: BlackNet Terminal -->
-    <div class="window" id="blacknetWindow" style="top: 60px; left: 240px; width: 420px; height: 300px;">
-        <div class="window-header" style="background: linear-gradient(90deg, #111, #444);" onmousedown="dragMouseDown(event, 'blacknetWindow')">
-            <span>🕵️‍♂️ BlackNet Security System v2.0</span>
-            <div class="close-btn" onclick="closeWindow('blacknetWindow')">X</div>
-        </div>
-        <div class="blacknet-body">
-            <div>
-                <p style="color: #ff3333; font-weight: bold; margin-bottom: 10px;">[RESTRICTED GOVERNMENT ACCESS]</p>
-                <p style="font-size: 12px; margin-bottom: 5px;">Введіть 4-значний Access Key для розблокування секретного досьє:</p>
-            </div>
-
-            <form onsubmit="handleBlacknetAccess(event)">
-                <label style="font-size: 11px; display: block; margin-bottom: 4px;">KEY_INPUT></label>
-                <input type="text" id="blacknetKey" class="win95-input" autocomplete="off" maxlength="4" placeholder="____">
-                <button type="submit" style="display: none;"></button>
-            </form>
-
-            <p id="blacknetStatus" style="font-size: 11px; color: #888;">Статус: Очікування коду...</p>
-        </div>
-    </div>
-
-    <!-- Панель задач Windows 95 -->
+    <!-- Панель задач -->
     <div class="taskbar">
-        <div class="start-btn">
-            <span style="font-size: 14px;">🪟</span> <b>Start</b>
+        <div class="start-btn" id="startBtn" onclick="toggleStartMenu(event)">
+            <span style="font-size: 14px;">🪟</span> <b>Пуск</b>
         </div>
         <div class="tray-group">
-            <!-- 🆕 Індикатор захисту -->
-            <div class="tray-item" title="Захищене з'єднання встановлено">
+            <div class="tray-item" title="Защищённое соединение установлено">
                 <span class="dot"></span> SECURE
             </div>
-            <!-- 🆕 Ім'я сесії -->
-            <div class="tray-item" title="Поточний користувач">
-                👤 Agent
+            <div class="tray-item" title="Текущий пользователь">
+                👤 Dundik
             </div>
-            <!-- Годинник -->
             <div class="tray" id="clockTray">12:00 PM</div>
         </div>
+    </div>
+
+    <!-- Start Menu -->
+    <div class="start-menu" id="startMenu">
+        <div class="start-menu-body">
+            <div class="start-menu-header">Windows 95</div>
+            <div style="flex: 1;">
+                <div class="start-menu-item">📁 Программы</div>
+                <div class="start-menu-item">📄 Документы</div>
+                <div class="start-menu-divider"></div>
+                <div class="start-menu-item">⚙️ Настройка</div>
+                <div class="start-menu-item">🔍 Найти</div>
+                <div class="start-menu-item">❓ Справка</div>
+                <div class="start-menu-item">▶️ Выполнить...</div>
+                <div class="start-menu-divider"></div>
+                <div class="start-menu-item" onclick="showShutdown()">⏻ Завершение работы...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Диалог выключения -->
+    <div class="shutdown-modal" id="shutdownModal">
+        <div class="shutdown-window">
+            <div class="win95-title">Завершение работы Windows</div>
+            <div class="shutdown-body">
+                <div class="pc-big">🖥️</div>
+                <p><b>Вы действительно хотите выключить компьютер?</b></p>
+                <p style="color: #555; margin-top: 6px; font-size: 11px;">
+                    Все несохранённые данные будут потеряны.
+                </p>
+                <div class="shutdown-buttons">
+                    <button class="win95-btn" onclick="closeShutdown()">Нет</button>
+                    <button class="win95-btn" onclick="shutdownComputer()">Да</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Чёрный экран -->
+    <div class="power-off-screen" id="powerOffScreen">
+        <button class="power-btn" onclick="location.reload()">⏻</button>
+        <p>НАЖМИТЕ ДЛЯ ВКЛЮЧЕНИЯ</p>
     </div>
 
     <script>
@@ -381,7 +512,6 @@
             } catch(e) {}
         }
 
-        // Завантаження десктопа (5 секунд)
         function initDesktop() {
             const container = document.getElementById('progressContainer');
             let step = 0;
@@ -399,14 +529,12 @@
                     clearInterval(interval);
                     document.getElementById('desktopLoader').style.display = 'none';
                     document.getElementById('desktop').style.display = 'flex';
-                    // 🔓 Знімаємо блокування кліків
                     document.body.classList.remove('loading');
                     playSound(900, 0.2);
                 }
             }, intervalTime);
         }
 
-        // Годинник у панелі задач
         function updateClock() {
             const now = new Date();
             let hours = now.getHours();
@@ -418,12 +546,9 @@
             document.getElementById('clockTray').innerText = hours + ':' + minutes + ' ' + ampm;
         }
 
-        // Відкриття та закриття вікон
         let zIndexCounter = 100;
         function openWindow(id) {
-            // 🔒 Захист від кліку під час завантаження
             if (document.body.classList.contains('loading')) return;
-
             playSound(600, 0.05);
             const win = document.getElementById(id);
             win.style.display = 'flex';
@@ -436,28 +561,7 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // Логіка підтвердження коду в BlackNet
-        function handleBlacknetAccess(e) {
-            e.preventDefault();
-            const key = document.getElementById('blacknetKey').value.trim();
-            const status = document.getElementById('blacknetStatus');
-
-            if (key === '1995') {
-                playSound(1000, 0.2, 'triangle');
-                status.style.color = '#00ff00';
-                status.innerText = 'УСПІХ! Доступ надано. Перенаправлення...';
-                setTimeout(() => {
-                    alert("ВІТАЮ! Ти розблокував секретні урядові файли!");
-                    // TODO: наступний рівень
-                }, 500);
-            } else {
-                playSound(150, 0.2, 'sawtooth');
-                status.style.color = '#ff3333';
-                status.innerText = '❌ ПОМИЛКА: Невірний Access Key!';
-            }
-        }
-
-        // 🖱️ ЛОГІКА ПЕРЕТЯГУВАННЯ ВІКОН (Drag and Drop)
+        // Drag
         let activeWin = null;
         let offsetX = 0, offsetY = 0;
 
@@ -467,10 +571,8 @@
             activeWin = document.getElementById(winId);
             zIndexCounter++;
             activeWin.style.zIndex = zIndexCounter;
-
             offsetX = e.clientX - activeWin.offsetLeft;
             offsetY = e.clientY - activeWin.offsetTop;
-
             document.onmousemove = elementDrag;
             document.onmouseup = closeDragElement;
         }
@@ -488,6 +590,50 @@
             document.onmousemove = null;
             document.onmouseup = null;
             activeWin = null;
+        }
+
+        // Start menu
+        function toggleStartMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('startMenu');
+            const btn = document.getElementById('startBtn');
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+                btn.classList.remove('active');
+            } else {
+                menu.style.display = 'block';
+                btn.classList.add('active');
+                playSound(600, 0.04);
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('startMenu');
+            const btn = document.getElementById('startBtn');
+            if (menu.style.display === 'block' && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.style.display = 'none';
+                btn.classList.remove('active');
+            }
+        });
+
+        function showShutdown() {
+            document.getElementById('startMenu').style.display = 'none';
+            document.getElementById('startBtn').classList.remove('active');
+            document.getElementById('shutdownModal').style.display = 'flex';
+            playSound(500, 0.06);
+        }
+
+        function closeShutdown() {
+            document.getElementById('shutdownModal').style.display = 'none';
+            playSound(400, 0.05);
+        }
+
+        function shutdownComputer() {
+            playSound(300, 0.3, 'sine');
+            setTimeout(() => {
+                document.getElementById('shutdownModal').style.display = 'none';
+                document.getElementById('powerOffScreen').style.display = 'flex';
+            }, 500);
         }
 
         setInterval(updateClock, 1000);
