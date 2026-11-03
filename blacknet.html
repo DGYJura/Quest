@@ -20,21 +20,12 @@
             color: #d0d0d0;
         }
 
-        /* ═══ ОБЩИЕ WIN95-DARK КОМПОНЕНТЫ ═══ */
         .win95-out {
             background: #3a3a3a;
             border-top: 2px solid #6a6a6a;
             border-left: 2px solid #6a6a6a;
             border-right: 2px solid #1a1a1a;
             border-bottom: 2px solid #1a1a1a;
-        }
-
-        .win95-in {
-            background: #1a1a1a;
-            border-top: 2px solid #1a1a1a;
-            border-left: 2px solid #1a1a1a;
-            border-right: 2px solid #6a6a6a;
-            border-bottom: 2px solid #6a6a6a;
         }
 
         .title-bar {
@@ -114,7 +105,7 @@
             letter-spacing: 2px;
         }
 
-        /* ═══ ЭКРАН ЛОГИНА ═══ */
+        /* ═══ ЛОГИН ═══ */
         .login-screen {
             position: fixed;
             top: 0; left: 0;
@@ -199,6 +190,16 @@
             color: #00cc00;
         }
 
+        .already-logged-in {
+            display: none;
+            padding: 10px;
+            background: #1a2a1a;
+            border-left: 3px solid #00cc00;
+            color: #00cc00;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
         .hack-progress {
             width: 100%;
             height: 20px;
@@ -219,7 +220,7 @@
             transition: width 0.4s ease;
         }
 
-        /* ═══ МОДАЛКИ ПОДТВЕРЖДЕНИЯ ═══ */
+        /* ═══ МОДАЛКИ ═══ */
         .confirm-overlay {
             display: none;
             position: fixed;
@@ -267,7 +268,7 @@
             margin-top: 18px;
         }
 
-        /* ═══ ГЛАВНОЕ ПРИЛОЖЕНИЕ ═══ */
+        /* ═══ ОСНОВНОЕ ПРИЛОЖЕНИЕ ═══ */
         .main-app {
             display: none;
             position: fixed;
@@ -435,16 +436,6 @@
             max-width: 300px;
         }
 
-        .files-locked .hint-note {
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0, 204, 0, 0.08);
-            border-left: 3px solid #00cc00;
-            color: #00cc00;
-            font-size: 11px;
-            text-align: left;
-        }
-
         .file-list {
             background: #333333;
             border: 1px solid #1a1a1a;
@@ -492,6 +483,21 @@
             padding-top: 60px;
             font-family: "MS Sans Serif", Tahoma, sans-serif;
         }
+
+        /* Кнопка "Забыть пользователя" — для сброса (тест) */
+        .logout-link {
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+            font-size: 10px;
+            color: #555;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .logout-link:hover {
+            color: #a0a0a0;
+        }
     </style>
 </head>
 <body>
@@ -512,10 +518,16 @@
                     </div>
                 </div>
 
+                <!-- Если уже вошёл ранее -->
+                <div id="alreadyLoggedIn" class="already-logged-in">
+                    ✓ Агент <b>Dundik</b> уже прошёл верификацию. Добро пожаловать снова.
+                </div>
+
+                <!-- Форма входа (показывается только если не вошёл) -->
                 <div id="loginForm">
                     <div class="login-form-row">
                         <label class="login-label">Введите дату рождения агента <b>DGYJura</b>:</label>
-                        <input type="text" id="accessKey" class="win95-input" autocomplete="off" placeholder="__.__.____" maxlength="10" autofocus>
+                        <input type="text" id="accessKey" class="win95-input" autocomplete="off" placeholder="__.__.____" maxlength="10">
                     </div>
                     <div class="login-buttons">
                         <button class="win95-btn" onclick="toggleHint()">Подсказка</button>
@@ -528,6 +540,13 @@
                     <div class="login-status" id="statusText">Статус: Ожидание кода...</div>
                 </div>
 
+                <!-- Если уже вошёл — только кнопка -->
+                <div id="alreadyLoggedInActions" style="display: none; margin-top: 10px;">
+                    <div class="login-buttons" style="justify-content: center;">
+                        <button class="win95-btn primary" onclick="grantAccess()" style="min-width: 160px;">Войти в систему</button>
+                    </div>
+                </div>
+
                 <div id="loginProgress" style="display: none;">
                     <div class="hack-progress">
                         <div class="hack-progress-bar" id="hackBar"></div>
@@ -536,6 +555,7 @@
                 </div>
             </div>
         </div>
+        <div class="logout-link" id="logoutLink" onclick="forgetUser()" style="display: none;">[ Забыть пользователя — для сброса ]</div>
     </div>
 
     <!-- Модалка 1 -->
@@ -598,7 +618,7 @@
 
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const SNAKE_PASSWORD = 'DGYJURA30';
+        const SNAKE_PASSWORD = 'DGYJURA15';
 
         function playSound(freq, duration = 0.08, type = 'square') {
             try {
@@ -625,6 +645,38 @@
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
         }
 
+        // ═══ ПРОВЕРКА: уже вошёл? ═══
+        function checkLoginState() {
+            let logged = false;
+            try {
+                logged = localStorage.getItem('blacknetLoggedIn') === 'true';
+            } catch(e) {}
+
+            if (logged) {
+                document.getElementById('alreadyLoggedIn').style.display = 'block';
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('alreadyLoggedInActions').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'block';
+            } else {
+                document.getElementById('alreadyLoggedIn').style.display = 'none';
+                document.getElementById('loginForm').style.display = 'block';
+                document.getElementById('alreadyLoggedInActions').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
+                setTimeout(() => {
+                    const inp = document.getElementById('accessKey');
+                    if (inp) inp.focus();
+                }, 100);
+            }
+        }
+
+        function forgetUser() {
+            playSound(400, 0.05);
+            try {
+                localStorage.removeItem('blacknetLoggedIn');
+            } catch(e) {}
+            checkLoginState();
+        }
+
         function handleAccess() {
             const val = document.getElementById('accessKey').value.trim();
             const normalized = val.replace(/[\/\-\s]/g, '.');
@@ -646,8 +698,10 @@
             document.getElementById('confirmModal1').style.display = 'none';
             document.getElementById('confirmModal2').style.display = 'none';
             const input = document.getElementById('accessKey');
-            input.value = '';
-            input.focus();
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
             const st = document.getElementById('statusText');
             st.className = 'login-status';
             st.innerText = 'Статус: Ожидание кода...';
@@ -663,7 +717,15 @@
             playSound(1000, 0.2, 'triangle');
             document.getElementById('confirmModal2').style.display = 'none';
             document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('alreadyLoggedIn').style.display = 'none';
+            document.getElementById('alreadyLoggedInActions').style.display = 'none';
+            document.getElementById('logoutLink').style.display = 'none';
             document.getElementById('loginProgress').style.display = 'block';
+
+            // Сохраняем, что прошёл проверку
+            try {
+                localStorage.setItem('blacknetLoggedIn', 'true');
+            } catch(e) {}
 
             const steps = [
                 { pct: 15, msg: 'Подключение к защищённому каналу...' },
@@ -765,11 +827,6 @@
         }
 
         function renderFilesLocked(area) {
-            const snakeWon = (() => {
-                try { return localStorage.getItem('snakeWon') === 'true'; }
-                catch(e) { return false; }
-            })();
-
             area.innerHTML = `
                 <h1>📁 Файлы</h1>
                 <p class="subtitle">Личное дело агента DGYJura</p>
@@ -782,9 +839,6 @@
                     </div>
                     <button class="win95-btn primary" onclick="checkFilesPassword()">Разблокировать</button>
                     <div class="login-status" id="filesStatus"></div>
-                    ${snakeWon
-                        ? '<div class="hint-note">💡 Подсказка: ты уже заработал этот код. Вспомни финальный экран игры «Змейка» на рабочем столе.</div>'
-                        : '<div class="hint-note" style="border-color: #ffaa00; color: #ffaa00; background: rgba(255, 170, 0, 0.08);">⚠️ Сначала пройди игру «Змейка» на рабочем столе — там ты получишь код.</div>'}
                 </div>
             `;
         }
@@ -835,7 +889,7 @@
 Проверки:
   ✓ Логин в систему Windows
   ✓ Пароль BlackNet
-  ✓ Змейка (30 яблок)
+  ✓ Змейка (15 яблок)
 
 Статус: ВЫПОЛНЕНО УСПЕШНО
 Оценка: 10/10`,
@@ -874,6 +928,7 @@ P.S. А теперь закрой эту программу и посмотри 
         }
 
         // Автозапуск
+        checkLoginState();
         playSound(600, 0.05);
     </script>
 </body>
