@@ -407,6 +407,12 @@
             <div class="icon-img">🕵️‍♂️</div>
             <span>BlackNet</span>
         </div>
+
+        <!-- 🎯 Миссия (появляется после разблокировки Файлов в BlackNet) -->
+        <div class="icon" id="missionIcon" onclick="openMission()" style="display: none;">
+            <div class="icon-img">🎯</div>
+            <span>Миссия</span>
+        </div>
     </div>
 
     <!-- Заметки -->
@@ -670,9 +676,25 @@
             );
         }
 
+        // ═══ МИССИЯ ═══
+        function checkMission() {
+            try {
+                if (localStorage.getItem('blacknetFilesUnlocked') === 'true') {
+                    document.getElementById('missionIcon').style.display = 'flex';
+                }
+            } catch(e) {}
+        }
+
+        function openMission() {
+            if (document.body.classList.contains('loading')) return;
+            playSound(600, 0.05);
+            window.location.href = 'mission.html';
+        }
+
         setInterval(updateClock, 1000);
         updateClock();
         loadNote();
+        checkMission();
         initDesktop();
     </script>
 </body>
