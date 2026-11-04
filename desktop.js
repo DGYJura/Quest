@@ -366,7 +366,7 @@ function handleTopNotifClick() {
 // 📞 СИСТЕМА ЗВОНКА
 // ═══════════════════════════════════════════════════════════════
 let callTimerInterval = null;
-let currentTimerValue = 60;
+let currentTimerValue = 30;
 
 function checkCallTrigger() {
     let bossRead = false;
@@ -385,7 +385,7 @@ function startCallTimer() {
     const el = document.getElementById('callTimer');
     el.style.display = 'block';
     el.classList.remove('danger');
-    currentTimerValue = 60;
+    currentTimerValue = 30;
     el.textContent = currentTimerValue;
     playSound(1200, 0.1);
 
