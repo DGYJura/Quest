@@ -174,6 +174,17 @@ function openSnake() {
         `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`);
 }
 
+// ═══ MINESWEEPER ═══
+function openMinesweeper() {
+    if (document.body.classList.contains('loading')) return;
+    playSound(600, 0.05);
+    const w = 460, h = 600;
+    const left = Math.max(0, (window.screen.width - w) / 2);
+    const top = Math.max(0, (window.screen.height - h) / 2);
+    window.open('minesweeper.html', 'minesweeperGame',
+        `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=no`);
+}
+
 // ═══ МИССИЯ ═══
 function checkMission() {
     try {
