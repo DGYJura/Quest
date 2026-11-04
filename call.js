@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// CALL.JS — дзвінок, чат, віруси
-// Використовує функції з desktop.js: playSound, showTopNotif,
-// hideTopNotif, showShutdown
+// CALL.JS — дзвінок, чат, віруси (РОЗШИРЕНИЙ діалог)
+// Використовує: playSound, showTopNotif, hideTopNotif, showShutdown (з desktop.js)
 // ═══════════════════════════════════════════════════════════════
 
 let callTimerInterval = null;
@@ -124,8 +123,30 @@ function restartFromCall() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 💬 ЧАТ
+// 💬 ЧАТ — РОЗШИРЕНИЙ ДІАЛОГ
 // ═══════════════════════════════════════════════════════════════
+
+// Індикатор "друкує..."
+let typingTimeout = null;
+function showTyping(callback, delay = 1500) {
+    const container = document.getElementById('chatMessages');
+    let existing = document.getElementById('typingIndicator');
+    if (existing) existing.remove();
+
+    const typing = document.createElement('div');
+    typing.id = 'typingIndicator';
+    typing.className = 'typing-indicator show';
+    typing.innerHTML = '??? печатает<span class="dots"></span>';
+    container.appendChild(typing);
+    container.scrollTop = container.scrollHeight;
+
+    if (typingTimeout) clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        if (typing.parentNode) typing.remove();
+        if (callback) callback();
+    }, delay);
+}
+
 function openChat() {
     document.getElementById('chatWindow').style.display = 'flex';
     document.getElementById('chatMessages').innerHTML = '';
@@ -135,13 +156,23 @@ function openChat() {
     updateChatTimer();
     chatTimerInterval = setInterval(updateChatTimer, 1000);
 
-    setTimeout(() => addChatMessage('system', '📞 Соединение установлено...'), 500);
-    setTimeout(() => addChatMessage('unknown', 'Я знаю всё о тебе... Dundik.'), 1500);
-    setTimeout(() => showChatOptions([
-        { text: '😏 Я тоже всё о тебе знаю', next: 'resp1' },
-        { text: '🤔 Кто ты такой?', next: 'resp2' },
-        { text: '😤 Что тебе нужно?', next: 'resp3' }
-    ]), 2200);
+    // ══════ СЦЕНА 1: ВСТУПЛЕНИЕ ══════
+    setTimeout(() => addChatMessage('system', '📞 Соединение установлено...'), 600);
+    setTimeout(() => {
+        showTyping(() => addChatMessage('unknown', 'Я знаю всё о тебе... Dundik.'), 1800);
+    }, 1500);
+    setTimeout(() => {
+        showTyping(() => addChatMessage('unknown', 'Твой IP. Твою систему. Твои пароли. Даже то, как ты играешь в Змейку.'), 2200);
+    }, 4000);
+    setTimeout(() => {
+        showTyping(() => {
+            showChatOptions([
+                { text: '😏 Я тоже о тебе всё знаю', next: 'a1' },
+                { text: '🤔 Кто ты, чёрт возьми?', next: 'a2' },
+                { text: '😤 Чего ты хочешь?', next: 'a3' }
+            ]);
+        }, 1800);
+    }, 7000);
 }
 
 function updateChatTimer() {
@@ -179,50 +210,74 @@ function showChatOptions(options) {
         btn.onclick = () => {
             container.innerHTML = '';
             addChatMessage('dundik', opt.text.replace(/^[^\s]+\s/, ''));
-            setTimeout(() => handleChatChoice(opt.next), 600);
+            setTimeout(() => handleChatChoice(opt.next), 700);
         };
         container.appendChild(btn);
     });
 }
 
 function handleChatChoice(next) {
-    if (next === 'resp1') {
-        addChatMessage('unknown', 'Ха-ха! Дерзкий. Мне нравится. Но давай серьёзно.');
-        setTimeout(() => addChatMessage('unknown', 'Ты играл в Змейку. 15 яблок. Впечатляет... для новичка.'), 1200);
-        setTimeout(() => showChatOptions([
-            { text: '💪 Это была разминка', next: 'r1a' },
-            { text: '🤨 Слыш, ты вообще кто?', next: 'r1b' }
-        ]), 2000);
-    } else if (next === 'resp2') {
-        addChatMessage('unknown', 'Тот, кто знает больше, чем следует. И следит за тобой с самого начала.');
-        setTimeout(() => addChatMessage('unknown', 'Ты прошёл все проверки. Но настоящий тест начинается сейчас.'), 1200);
-        setTimeout(() => showChatOptions([
-            { text: '🔥 Я готов', next: 'r1a' },
-            { text: '😴 Может, попозже?', next: 'r1b' }
-        ]), 2200);
-    } else if (next === 'resp3') {
-        addChatMessage('unknown', 'Не так быстро, агент. Сначала проверка.');
-        setTimeout(() => addChatMessage('unknown', 'Твоя реакция — 200мс. Слабо для агента BlackNet.'), 1200);
-        setTimeout(() => showChatOptions([
-            { text: '😎 Я просто дал тебе шанс', next: 'r1a' },
-            { text: '🫡 Ок, что дальше?', next: 'r1b' }
-        ]), 2200);
-    } else if (next === 'r1a') {
-        addChatMessage('unknown', 'Ладно, хватит болтовни. У меня к тебе предложение...');
-        triggerDgNotifInChat();
-    } else if (next === 'r1b') {
-        addChatMessage('unknown', 'Не торопись. У меня к тебе предложение, которое изменит всё...');
-        triggerDgNotifInChat();
+    // ══════ СЦЕНА 2: ВІДПОВІДЬ + ПЕРЕВІРКА ══════
+    if (next === 'a1') {
+        showTyping(() => addChatMessage('unknown', 'Ха-ха! Дерзкий. Мне нравится. Но давай по-серьёзному.'), 1500);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Ты прошёл Змейку. 15 яблок. И даже вирусы не задели тебя, да?'), 2000), 3500);
+        setTimeout(() => showTyping(() => showChatOptions([
+            { text: '💪 Это была разминка', next: 'b1' },
+            { text: '🤨 Ты следил за мной?', next: 'b2' }
+        ]), 1800), 7000);
+    } else if (next === 'a2') {
+        showTyping(() => addChatMessage('unknown', 'Тот, кто знает больше, чем следует. Тот, о ком ты никогда не слышал.'), 1800);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Но ты меня знаешь. Хотя бы по имени... «Синдикат».'), 1800), 4000);
+        setTimeout(() => showTyping(() => showChatOptions([
+            { text: '😨 Синдикат?! Вы же легенда', next: 'b1' },
+            { text: '😒 Пфф. Слышал о вас', next: 'b2' }
+        ]), 1800), 7500);
+    } else if (next === 'a3') {
+        showTyping(() => addChatMessage('unknown', 'Не так быстро, агент. Сначала — проверка.'), 1500);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Твоя реакция — 200мс. Слабо для BlackNet. Но для новичка — сойдёт.'), 2000), 3500);
+        setTimeout(() => showTyping(() => showChatOptions([
+            { text: '😎 Я просто дал тебе фору', next: 'b1' },
+            { text: '🫡 Ладно, что дальше?', next: 'b2' }
+        ]), 1800), 7000);
+    }
+
+    // ══════ СЦЕНА 3: ГЛИБШЕ ══════
+    else if (next === 'b1') {
+        showTyping(() => addChatMessage('unknown', 'Мне нравится твой настрой. DGYJura не соврал — ты толковый.'), 1800);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Но вот в чём дело... Он в беде. И ты это знаешь.'), 1800), 4200);
+        setTimeout(() => showTyping(() => showChatOptions([
+            { text: '😰 Что с ним?!', next: 'c1' },
+            { text: '🤬 Если ты его тронул...', next: 'c2' }
+        ]), 1800), 8000);
+    } else if (next === 'b2') {
+        showTyping(() => addChatMessage('unknown', 'Слышал. Значит понимаешь масштаб.'), 1500);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Твой друг DGYJura — он нам мешал. И знаешь что? Мы его... задержали.'), 2200), 3500);
+        setTimeout(() => showTyping(() => showChatOptions([
+            { text: '😡 Где он?!', next: 'c1' },
+            { text: '🥶 Вы ответите за это', next: 'c2' }
+        ]), 1800), 8000);
+    }
+
+    // ══════ СЦЕНА 4: КУЛЬМІНАЦІЯ ══════
+    else if (next === 'c1') {
+        showTyping(() => addChatMessage('unknown', 'Живой. Пока что. Но каждый час в сети — час ближе к точке невозврата.'), 2200);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Хочешь его спасти? Тогда слушай внимательно...'), 1800), 4500);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Есть предложение. Но сначала — проверь сообщения. DGYJura успел тебе кое-что оставить.'), 2500), 8000);
+        setTimeout(() => triggerDgNotifInChat(), 12000);
+    } else if (next === 'c2') {
+        showTyping(() => addChatMessage('unknown', 'Угрозы? Ха-ха. Смешно.'), 1500);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Знаешь, что смешно ещё больше? Ты сейчас сидишь в системе, которую МЫ контролируем.'), 2200), 3200);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Так что давай без этого. Слушай предложение. Оно выгодно и тебе, и DGYJura.'), 2200), 7500);
+        setTimeout(() => showTyping(() => addChatMessage('unknown', 'Но сначала — проверь сообщения. Там всё написано.'), 1800), 11500);
+        setTimeout(() => triggerDgNotifInChat(), 15000);
     }
 }
 
 function triggerDgNotifInChat() {
-    setTimeout(() => {
-        addChatMessage('system', '⚠️ НОВОЕ СООБЩЕНИЕ ОТ DGYJura');
-        setTimeout(() => addChatMessage('unknown', 'Но сначала — проверь сообщения. Там всё написано.'), 1200);
-        setTimeout(() => addChatMessage('unknown', '*сброс*'), 2400);
-        setTimeout(() => endChat(), 3600);
-    }, 1200);
+    showTyping(() => addChatMessage('system', '⚠️ НОВОЕ СООБЩЕНИЕ ОТ DGYJura'), 1200);
+    setTimeout(() => showTyping(() => addChatMessage('unknown', 'Ну всё, мне пора. Не заставляй меня ждать.'), 1500), 3500);
+    setTimeout(() => showTyping(() => addChatMessage('unknown', '*сброс соединения*'), 1200), 6500);
+    setTimeout(() => endChat(), 9000);
 }
 
 function endChat() {
@@ -271,7 +326,7 @@ function hangUp() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 📧 ПРОВЕРКА ПРИ ЗАГРУЗКЕ (повідомлення DGYJura)
+// 📧 ПРОВЕРКА ПРИ ЗАГРУЗКЕ
 // ═══════════════════════════════════════════════════════════════
 function checkTopNotif() {
     let chatDone = false;
