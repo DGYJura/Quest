@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сапер - Windows 95</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif; user-select: none; }
+        body { background: #c0c0c0; height: 100vh; overflow: hidden; padding: 3px; }
+
+        .win95-window {
+            width: 100%; height: 100%;
+            background: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            display: flex; flex-direction: column;
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white; padding: 3px 6px;
+            font-weight: bold; font-size: 13px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
+        }
+
+        .title-close {
+            background: #c0c0c0;
+            border-top: 1px solid #fff; border-left: 1px solid #fff;
+            border-right: 1px solid #000; border-bottom: 1px solid #000;
+            width: 16px; height: 14px; font-size: 9px;
+            line-height: 12px; text-align: center;
+            color: black; font-weight: bold; cursor: pointer;
+        }
+        .title-close:hover { background: #ff0000; color: white; }
+
+        .menu-bar {
+            background: #c0c0c0; padding: 2px 4px; font-size: 12px;
+            border-bottom: 1px solid #808080;
+            display: flex; gap: 15px; flex-shrink: 0;
+        }
+        .menu-item { padding: 2px 6px; cursor: pointer; }
+        .menu-item:hover { background: #000080; color: white; }
+
+        .game-area {
+            flex: 1; padding: 8px;
+            display: flex; flex-direction: column; gap: 6px;
+            overflow: hidden;
+        }
+
+        /* HUD */
+        .game-hud {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #c0c0c0; padding: 4px 8px;
+            border-top: 2px solid #808080; border-left: 2px solid #808080;
+            border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+            font-family: 'Courier New', monospace; font-weight: bold;
+            font-size: 16px;
+        }
+        .hud-counter {
+            background: #000;
+            color: #ff0000;
+            padding: 2px 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            letter-spacing: 2px;
+            min-width: 62px;
+            text-align: center;
+        }
+        .hud-face {
+            font-size: 26px;
+            cursor: pointer;
+            padding: 0 8px;
+            user-select: none;
+        }
+        .hud-face:hover { transform: scale(1.15); }
+
+        .flag-btn {
+            background: #c0c0c0;
+            border-top: 2px solid #fff; border-left: 2px solid #fff;
+            border-right: 2px solid #000; border-bottom: 2px solid #000;
+            padding: 4px 14px; font-size: 16px; cursor: pointer;
+            font-weight: bold;
+        }
+        .flag-btn.active {
+            background: #ffff99;
+            border-top: 2px solid #000; border-left: 2px solid #000;
+            border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+        }
+
+        /* Field */
+        .field-wrap {
+            flex: 1;
+            background: #808080;
+            border-top: 2px solid #808080; border-left: 2px solid #808080;
+            border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+            padding: 6px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: auto;
+        }
+        .field {
+            display: grid;
+            grid-template-columns: repeat(8, 34px);
+            grid-template-rows: repeat(8, 34px);
+            gap: 0;
+            background: #808080;
+            border: 1px solid #000;
+        }
+
+        .cell {
+            width: 34px; height: 34px;
+            background: #c0c0c0;
+            border-top: 2px solid #fff; border-left: 2px solid #fff;
+            border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 18px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: none;
+        }
+        .cell:hover:not(.open):not(.flag) {
+            background: #d0d0d0;
+        }
+        .cell.open {
+            background: #c0c0c0;
+            border: 1px solid #808080;
+            cursor: default;
+        }
+        .cell.open.mine {
+            background: #ff6666;
+        }
+        .cell.flag {
+            background: #c0c0c0;
+        }
+
+        /* Кольори чисел */
+        .cell.n1 { color: #0000ff; }
+        .cell.n2 { color: #008000; }
+        .cell.n3 { color: #ff0000; }
+        .cell.n4 { color: #000080; }
+        .cell.n5 { color: #800000; }
+        .cell.n6 { color: #008080; }
+        .cell.n7 { color: #000000; }
+        .cell.n8 { color: #808080; }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center; align-items: center;
+        }
+        .overlay.show { display: flex; }
+
+        .overlay-box {
+            background: #c0c0c0;
+            border-top: 2px solid #fff; border-left: 2px solid #fff;
+            border-right: 2px solid #000; border-bottom: 2px solid #000;
+            padding: 3px; width: 420px; max-width: 92vw;
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .overlay-title {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: white; padding: 4px 8px;
+            font-weight: bold; font-size: 13px;
+        }
+        .overlay-body {
+            padding: 20px; text-align: center; font-size: 13px;
+            line-height: 1.6;
+        }
+        .overlay-body h2 { font-size: 20px; margin-bottom: 14px; }
+        .overlay-body.win h2 { color: #008000; }
+        .overlay-body.lose h2 { color: #cc0000; }
+
+        .code-reward {
+            background: #000080;
+            color: #ffff00;
+            padding: 14px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-align: center;
+            margin: 16px 0;
+            border: 2px solid #ffff00;
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+        }
+
+        .btn-row {
+            display: flex; justify-content: center; gap: 10px;
+            margin-top: 18px; flex-wrap: wrap;
+        }
+        .win95-btn {
+            background: #c0c0c0;
+            border-top: 2px solid #fff; border-left: 2px solid #fff;
+            border-right: 2px solid #000; border-bottom: 2px solid #000;
+            padding: 8px 20px; font-size: 12px; cursor: pointer;
+            font-weight: bold; min-width: 120px;
+        }
+        .win95-btn:active {
+            border-top: 2px solid #000; border-left: 2px solid #000;
+            border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="win95-window">
+        <div class="title-bar">
+            <span>💣 Сапер</span>
+            <div class="title-close" onclick="window.close()">X</div>
+        </div>
+
+        <div class="menu-bar">
+            <div class="menu-item" onclick="resetGame()">Игра</div>
+            <div class="menu-item" onclick="resetGame()">Новая</div>
+            <div class="menu-item" onclick="window.close()">Выход</div>
+        </div>
+
+        <div class="game-area">
+            <div class="game-hud">
+                <div class="hud-counter" id="mineCounter">010</div>
+                <button class="flag-btn" id="flagBtn" onclick="toggleFlagMode()" title="Переключить режим флажков">🚩</button>
+                <div class="hud-face" id="hudFace" onclick="resetGame()">🙂</div>
+                <div class="hud-counter" id="timer">000</div>
+            </div>
+
+            <div class="field-wrap">
+                <div class="field" id="field"></div>
+            </div>
+
+            <div style="text-align: center; color: #555; font-size: 10px;">
+                ЛКМ — открыть · ПКМ или 🚩 — флажок
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay">
+        <div class="overlay-box">
+            <div class="overlay-title" id="overlayTitle">Игра</div>
+            <div class="overlay-body" id="overlayBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const SIZE = 8;
+        const MINES = 10;
+        const WIN_CODE = 'SAFE_47_88';
+
+        let board = [];
+        let revealed = [];
+        let flags = [];
+        let gameOver = false;
+        let firstClick = true;
+        let flagMode = false;
+        let minesLeft = MINES;
+        let startTime = null;
+        let timerInterval = null;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(freq, duration = 0.08, type = 'square') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.value = 0.04;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function initBoard() {
+            board = [];
+            revealed = [];
+            flags = [];
+            gameOver = false;
+            firstClick = true;
+            minesLeft = MINES;
+
+            for (let y = 0; y < SIZE; y++) {
+                board[y] = [];
+                revealed[y] = [];
+                flags[y] = [];
+                for (let x = 0; x < SIZE; x++) {
+                    board[y][x] = 0;
+                    revealed[y][x] = false;
+                    flags[y][x] = false;
+                }
+            }
+
+            document.getElementById('mineCounter').textContent = String(MINES).padStart(3, '0');
+            document.getElementById('timer').textContent = '000';
+            document.getElementById('hudFace').textContent = '🙂';
+            document.getElementById('overlay').classList.remove('show');
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
+            startTime = null;
+        }
+
+        function placeMines(safeX, safeY) {
+            let placed = 0;
+            while (placed < MINES) {
+                const x = Math.floor(Math.random() * SIZE);
+                const y = Math.floor(Math.random() * SIZE);
+
+                // Безопасная зона первого клика (3x3)
+                if (Math.abs(x - safeX) <= 1 && Math.abs(y - safeY) <= 1) continue;
+                if (board[y][x] === -1) continue;
+
+                board[y][x] = -1;
+                placed++;
+            }
+
+            // Рахуємо сусідні міни
+            for (let y = 0; y < SIZE; y++) {
+                for (let x = 0; x < SIZE; x++) {
+                    if (board[y][x] === -1) continue;
+                    let count = 0;
+                    for (let dy = -1; dy <= 1; dy++) {
+                        for (let dx = -1; dx <= 1; dx++) {
+                            if (dy === 0 && dx === 0) continue;
+                            const ny = y + dy, nx = x + dx;
+                            if (ny >= 0 && ny < SIZE && nx >= 0 && nx < SIZE && board[ny][nx] === -1) count++;
+                        }
+                    }
+                    board[y][x] = count;
+                }
+            }
+        }
+
+        function startTimer() {
+            if (startTime) return;
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                if (gameOver) return;
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const val = Math.min(999, elapsed);
+                document.getElementById('timer').textContent = String(val).padStart(3, '0');
+            }, 200);
+        }
+
+        function render() {
+            const field = document.getElementById('field');
+            field.innerHTML = '';
+
+            for (let y = 0; y < SIZE; y++) {
+                for (let x = 0; x < SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+
+                    if (revealed[y][x]) {
+                        cell.classList.add('open');
+                        if (board[y][x] === -1) {
+                            cell.classList.add('mine');
+                            cell.textContent = '💣';
+                        } else if (board[y][x] > 0) {
+                            cell.textContent = board[y][x];
+                            cell.classList.add('n' + board[y][x]);
+                        }
+                    } else if (flags[y][x]) {
+                        cell.classList.add('flag');
+                        cell.textContent = '🚩';
+                    }
+
+                    cell.onclick = () => handleClick(x, y);
+                    cell.oncontextmenu = (e) => {
+                        e.preventDefault();
+                        handleFlag(x, y);
+                    };
+
+                    field.appendChild(cell);
+                }
+            }
+        }
+
+        function handleClick(x, y) {
+            if (gameOver) return;
+            if (flagMode) {
+                handleFlag(x, y);
+                return;
+            }
+            if (flags[y][x] || revealed[y][x]) return;
+
+            if (firstClick) {
+                placeMines(x, y);
+                firstClick = false;
+                startTimer();
+            }
+
+            revealCell(x, y);
+            render();
+            checkWin();
+        }
+
+        function handleFlag(x, y) {
+            if (gameOver) return;
+            if (revealed[y][x]) return;
+
+            flags[y][x] = !flags[y][x];
+            minesLeft += flags[y][x] ? -1 : 1;
+            document.getElementById('mineCounter').textContent = String(Math.max(0, minesLeft)).padStart(3, '0');
+            playSound(flags[y][x] ? 600 : 500, 0.04);
+            render();
+        }
+
+        function revealCell(x, y) {
+            if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) return;
+            if (revealed[y][x] || flags[y][x]) return;
+
+            revealed[y][x] = true;
+
+            if (board[y][x] === -1) {
+                gameOver = true;
+                playSound(150, 0.4, 'sawtooth');
+                revealAllMines();
+                showLose();
+                return;
+            }
+
+            if (board[y][x] === 0) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        if (dy === 0 && dx === 0) continue;
+                        revealCell(x + dx, y + dy);
+                    }
+                }
+            }
+        }
+
+        function revealAllMines() {
+            for (let y = 0; y < SIZE; y++) {
+                for (let x = 0; x < SIZE; x++) {
+                    if (board[y][x] === -1 && !revealed[y][x]) {
+                        revealed[y][x] = true;
+                    }
+                }
+            }
+            render();
+            document.getElementById('hudFace').textContent = '😵';
+        }
+
+        function checkWin() {
+            let unrevealed = 0;
+            for (let y = 0; y < SIZE; y++) {
+                for (let x = 0; x < SIZE; x++) {
+                    if (!revealed[y][x] && board[y][x] !== -1) unrevealed++;
+                }
+            }
+            if (unrevealed === 0) {
+                gameOver = true;
+                playSound(1500, 0.4, 'sine');
+                document.getElementById('hudFace').textContent = '😎';
+                if (timerInterval) clearInterval(timerInterval);
+                showWin();
+            }
+        }
+
+        function showWin() {
+            const body = document.getElementById('overlayBody');
+            body.className = 'overlay-body win';
+            body.innerHTML = `
+                <h2>🏆 ПОБЕДА!</h2>
+                <p>Ты разминировал всё поле!</p>
+                <p>Время: <b>${document.getElementById('timer').textContent} сек</b></p>
+                <p style="color: #008000; margin-top: 10px;">✓ Найден зашифрованный файл:</p>
+                <div class="code-reward">${WIN_CODE}</div>
+                <p style="font-size: 11px; color: #555; font-style: italic;">
+                    Запиши код в Блокнот — он пригодится позже.
+                </p>
+                <div class="btn-row">
+                    <button class="win95-btn" onclick="resetGame()">Играть снова</button>
+                    <button class="win95-btn" onclick="window.close()">Закрыть</button>
+                </div>
+            `;
+            document.getElementById('overlayTitle').textContent = '🎉 Победа!';
+            document.getElementById('overlay').classList.add('show');
+
+            try {
+                localStorage.setItem('minesweeperWon', 'true');
+                localStorage.setItem('minesweeperCode', WIN_CODE);
+            } catch(e) {}
+        }
+
+        function showLose() {
+            const body = document.getElementById('overlayBody');
+            body.className = 'overlay-body lose';
+            body.innerHTML = `
+                <h2>💀 ВЗРЫВ!</h2>
+                <p>Ты наступил на мину.</p>
+                <p>Попробуй ещё раз — будь внимательнее!</p>
+                <div class="btn-row">
+                    <button class="win95-btn" onclick="resetGame()">Попробовать снова</button>
+                    <button class="win95-btn" onclick="window.close()">Закрыть</button>
+                </div>
+            `;
+            document.getElementById('overlayTitle').textContent = 'Игра окончена';
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function toggleFlagMode() {
+            flagMode = !flagMode;
+            const btn = document.getElementById('flagBtn');
+            btn.classList.toggle('active', flagMode);
+            playSound(600, 0.04);
+        }
+
+        function resetGame() {
+            if (timerInterval) clearInterval(timerInterval);
+            initBoard();
+            render();
+        }
+
+        initBoard();
+        render();
+    </script>
+</body>
+</html>
