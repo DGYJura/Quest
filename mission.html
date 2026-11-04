@@ -18,6 +18,11 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
+            transition: background-color 0.1s;
+        }
+
+        body.wrong-flash {
+            background-color: #ff0000 !important;
         }
 
         .timer-box {
@@ -72,7 +77,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 520px;
+            width: 560px;
             max-width: 92vw;
             background: #c0c0c0;
             border-top: 2px solid #ffffff;
@@ -171,7 +176,14 @@
             z-index: 1000;
             animation: popIn 0.25s ease-out;
             transition: transform 0.1s;
-            filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.6));
+        }
+
+        .virus.decoy {
+            filter: drop-shadow(0 0 4px rgba(0, 150, 255, 0.7));
+        }
+
+        .virus.bad {
+            filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.7));
         }
 
         .virus:hover { transform: scale(1.15); }
@@ -209,32 +221,82 @@
 
         .instruction-list { padding-left: 20px; margin: 10px 0; }
         .instruction-list li { margin: 6px 0; }
+
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+            margin: 5px 0;
+            background: #e8e8e8;
+            border: 1px solid #808080;
+            font-size: 12px;
+        }
+
+        .legend-icon {
+            font-size: 24px;
+        }
+
+        .legend-bad {
+            border-left: 4px solid #cc0000;
+        }
+
+        .legend-good {
+            border-left: 4px solid #008000;
+        }
+
+        .penalty-text {
+            position: fixed;
+            color: #ff0000;
+            font-size: 32px;
+            font-weight: bold;
+            z-index: 9999;
+            pointer-events: none;
+            text-shadow: 0 0 8px white, 0 0 4px white;
+            animation: penaltyFloat 1s ease-out forwards;
+        }
+
+        @keyframes penaltyFloat {
+            from { transform: translateY(0) scale(1); opacity: 1; }
+            to { transform: translateY(-60px) scale(1.5); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="timer-box" id="timerBox">03:00</div>
-    <div class="score-box" id="scoreBox">0 / 20</div>
+    <div class="timer-box" id="timerBox">01:00</div>
+    <div class="score-box" id="scoreBox">0 / 25</div>
 
     <!-- БРИФИНГ -->
     <div class="center-window" id="briefingWindow">
         <div class="win-title">
-            <span>🎯 Секретная миссия #B15</span>
+            <span>🎯 Секретная миссия #B15 — УСЛОЖНЁННАЯ</span>
             <div class="win-close" onclick="goBack()">X</div>
         </div>
         <div class="win-body">
             <h2>⚠️ Внимание, агент Dundik!</h2>
-            <p>Ты разблокировал секретные файлы и получил доступ к <b>новой миссии</b>.</p>
-            <p>В систему проникли вирусы. Твоя задача — <b>обезвредить их</b> как можно быстрее.</p>
+            <p>В систему проникли вирусы. Но теперь всё сложнее — враг маскируется.</p>
 
-            <p><b>📋 Условия миссии:</b></p>
+            <p><b>📋 Правила миссии:</b></p>
             <ul class="instruction-list">
-                <li>Уничтожь <b>20 вирусов</b> 🦠</li>
-                <li>У тебя есть всего <b>3 минуты</b></li>
-                <li>Кликай по вирусам пока они не исчезли</li>
+                <li>Уничтожь <b>25 вирусов</b> за <b>60 секунд</b></li>
+                <li>Скорость появления вирусов <b>растёт</b> с каждым кликом</li>
+                <li>Время жизни вируса <b>сокращается</b> — не зевай!</li>
             </ul>
 
-            <p style="color: #800000;"><b>⚠️ Если не успеешь — миссия будет провалена!</b></p>
+            <p style="margin-top: 14px;"><b>🎯 Что кликать:</b></p>
+
+            <div class="legend-row legend-bad">
+                <span class="legend-icon">🦠 👾 💀 ☣️ 🧬 ⚠️</span>
+                <span><b>ВИРУСЫ</b> — кликай! (+1 очко)</span>
+            </div>
+
+            <div class="legend-row legend-good">
+                <span class="legend-icon">📄 📁 💾 📊 🖼️</span>
+                <span><b>ФАЙЛЫ</b> — НЕ трогай! (−1 очко)</span>
+            </div>
+
+            <p style="color: #800000; margin-top: 14px;"><b>⚠️ Если не успеешь или собьёшься — миссия провалена!</b></p>
 
             <div class="btn-row">
                 <button class="win-btn danger" onclick="goBack()">Отмена</button>
@@ -250,10 +312,14 @@
     </div>
 
     <script>
-        const TOTAL_TIME = 180;
-        const TARGET_SCORE = 20;
-        const SPAWN_DELAY = 700;
-        const VIRUS_LIFETIME = 2200;
+        // ═══ НАСТРОЙКИ СЛОЖНОСТИ ═══
+        const TOTAL_TIME = 60;              // 60 секунд
+        const TARGET_SCORE = 25;            // нужно 25 кликов
+        const SPAWN_DELAY_START = 700;      // старт: 700ms между спавнами
+        const SPAWN_DELAY_END = 350;        // финал: 350ms (быстрее в 2 раза)
+        const VIRUS_LIFETIME_START = 1800;  // старт: вирус живёт 1.8с
+        const VIRUS_LIFETIME_END = 900;     // финал: 0.9с
+        const DECOY_CHANCE = 0.25;          // 25% предметов — файлы (пастки)
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -274,13 +340,27 @@
 
         let timeLeft = TOTAL_TIME;
         let score = 0;
+        let mistakes = 0;
         let running = false;
         let timerInterval = null;
         let spawnTimeout = null;
-        let activeViruses = new Set();
+        let activeItems = new Set();
 
         function goBack() {
             window.location.href = 'desktop.html';
+        }
+
+        // ═══ Динамическая сложность ═══
+        function getProgress() {
+            return Math.min(1, score / TARGET_SCORE);
+        }
+        function getCurrentSpawnDelay() {
+            const p = getProgress();
+            return SPAWN_DELAY_START - (SPAWN_DELAY_START - SPAWN_DELAY_END) * p;
+        }
+        function getCurrentLifetime() {
+            const p = getProgress();
+            return VIRUS_LIFETIME_START - (VIRUS_LIFETIME_START - VIRUS_LIFETIME_END) * p;
         }
 
         // ═══ ПРОВЕРКА: МИССИЯ УЖЕ ПРОЙДЕНА? ═══
@@ -331,6 +411,7 @@
 
             timeLeft = TOTAL_TIME;
             score = 0;
+            mistakes = 0;
             running = true;
             updateTimer();
             updateScore();
@@ -352,18 +433,31 @@
 
         function scheduleSpawn() {
             if (!running) return;
-            spawnVirus();
-            spawnTimeout = setTimeout(scheduleSpawn, SPAWN_DELAY);
+            spawnItem();
+            spawnTimeout = setTimeout(scheduleSpawn, getCurrentSpawnDelay());
         }
 
-        function spawnVirus() {
+        function spawnItem() {
             if (!running) return;
 
-            const virus = document.createElement('div');
-            virus.className = 'virus';
+            const isDecoy = Math.random() < DECOY_CHANCE;
 
-            const types = ['🦠', '👾', '💀', '☣️', '🧬', '⚠️'];
-            virus.textContent = types[Math.floor(Math.random() * types.length)];
+            const item = document.createElement('div');
+            item.className = 'virus';
+
+            if (isDecoy) {
+                // 🎯 Пастка — файл
+                const decoys = ['📄', '📁', '💾', '📊', '🖼️'];
+                item.textContent = decoys[Math.floor(Math.random() * decoys.length)];
+                item.dataset.type = 'decoy';
+                item.classList.add('decoy');
+            } else {
+                // 🦠 Настоящий вирус
+                const viruses = ['🦠', '👾', '💀', '☣️', '🧬', '⚠️'];
+                item.textContent = viruses[Math.floor(Math.random() * viruses.length)];
+                item.dataset.type = 'virus';
+                item.classList.add('bad');
+            }
 
             const padTop = 95;
             const padBottom = 40;
@@ -371,36 +465,71 @@
             const maxX = window.innerWidth - 2 * padSides - 50;
             const maxY = window.innerHeight - padTop - padBottom - 50;
 
-            virus.style.left = (padSides + Math.random() * maxX) + 'px';
-            virus.style.top = (padTop + Math.random() * maxY) + 'px';
+            item.style.left = (padSides + Math.random() * maxX) + 'px';
+            item.style.top = (padTop + Math.random() * maxY) + 'px';
 
-            virus.onclick = () => {
-                if (!running || virus.classList.contains('dead')) return;
-                score++;
-                updateScore();
-                playSound(900 + Math.random() * 400, 0.06);
-                virus.classList.add('dead');
-                activeViruses.delete(virus);
-                setTimeout(() => virus.remove(), 300);
+            item.onclick = () => {
+                if (!running || item.classList.contains('dead')) return;
 
-                if (score >= TARGET_SCORE) {
-                    endMission(true);
+                if (item.dataset.type === 'virus') {
+                    // ✅ Правильный клик
+                    score++;
+                    updateScore();
+                    playSound(900 + Math.random() * 400, 0.06);
+                    item.classList.add('dead');
+                    activeItems.delete(item);
+                    setTimeout(() => item.remove(), 300);
+
+                    if (score >= TARGET_SCORE) {
+                        endMission(true);
+                    }
+                } else {
+                    // ❌ Клик по файлу — штраф
+                    mistakes++;
+                    score = Math.max(0, score - 1);
+                    updateScore();
+
+                    // Звук ошибки
+                    playSound(150, 0.2, 'sawtooth');
+
+                    // Красный спалах
+                    document.body.classList.add('wrong-flash');
+                    setTimeout(() => document.body.classList.remove('wrong-flash'), 200);
+
+                    // Плавающий текст "-1"
+                    showPenalty(item);
+
+                    item.classList.add('dead');
+                    activeItems.delete(item);
+                    setTimeout(() => item.remove(), 300);
                 }
             };
 
-            document.body.appendChild(virus);
-            activeViruses.add(virus);
+            document.body.appendChild(item);
+            activeItems.add(item);
 
+            const lifetime = getCurrentLifetime();
             setTimeout(() => {
-                if (virus.parentNode && !virus.classList.contains('dead')) {
-                    virus.style.transition = 'opacity 0.3s';
-                    virus.style.opacity = '0';
+                if (item.parentNode && !item.classList.contains('dead')) {
+                    item.style.transition = 'opacity 0.3s';
+                    item.style.opacity = '0';
                     setTimeout(() => {
-                        if (virus.parentNode) virus.remove();
-                        activeViruses.delete(virus);
+                        if (item.parentNode) item.remove();
+                        activeItems.delete(item);
                     }, 300);
                 }
-            }, VIRUS_LIFETIME);
+            }, lifetime);
+        }
+
+        function showPenalty(el) {
+            const rect = el.getBoundingClientRect();
+            const p = document.createElement('div');
+            p.className = 'penalty-text';
+            p.textContent = '-1';
+            p.style.left = rect.left + 'px';
+            p.style.top = rect.top + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 1000);
         }
 
         function updateTimer() {
@@ -409,7 +538,7 @@
             const box = document.getElementById('timerBox');
             box.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 
-            if (timeLeft <= 30) {
+            if (timeLeft <= 15) {
                 box.classList.add('warning');
             } else {
                 box.classList.remove('warning');
@@ -425,8 +554,8 @@
             clearInterval(timerInterval);
             clearTimeout(spawnTimeout);
 
-            activeViruses.forEach(v => v.remove());
-            activeViruses.clear();
+            activeItems.forEach(v => v.remove());
+            activeItems.clear();
 
             document.getElementById('timerBox').style.display = 'none';
             document.getElementById('scoreBox').style.display = 'none';
@@ -446,8 +575,9 @@
                 bodyEl.innerHTML = `
                     <h2 style="color: #008000;">🏆 МИССИЯ ВЫПОЛНЕНА!</h2>
                     <p>Ты обезвредил <b>${score}</b> вирусов и спас систему!</p>
+                    <p>Ошибок (кликов по файлам): <b>${mistakes}</b></p>
+                    ${mistakes === 0 ? '<p class="success-text">🌟 ИДЕАЛЬНО! Ни одной ошибки!</p>' : ''}
                     <p>Система стабилизирована. <b>DGYJura</b> гордится тобой.</p>
-                    <p class="success-text">✓ Новая информация разблокирована в твоём профиле.</p>
                     <div class="code-reward">MISSION_ACCOMPLISHED</div>
                     <p style="font-size: 11px; color: #555; text-align: center;">
                         <i>В BlackNet разблокированы разделы "Друзья" и "Сообщения"</i>
@@ -463,6 +593,7 @@
                 bodyEl.innerHTML = `
                     <h2 class="fail-text">💀 ВРЕМЯ ВЫШЛО</h2>
                     <p>Ты успел обезвредить только <b>${score}</b> из <b>${TARGET_SCORE}</b> вирусов.</p>
+                    <p>Ошибок: <b>${mistakes}</b></p>
                     <p>Система взломана. Вирусы захватили контроль.</p>
                     <p style="color: #800000; font-weight: bold; margin-top: 12px;">
                         Попробуй снова — время не ждёт!
