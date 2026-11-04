@@ -121,10 +121,12 @@
             padding: 8px 22px; font-size: 13px; font-weight: bold; cursor: pointer; min-width: 110px;
         }
 
-        /* ═══ 💬 ЧАТ ═══ */
+        /* ═══ 💬 ЧАТ (збільшений) ═══ */
         .chat-window {
             display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); width: 520px; max-width: 92vw; max-height: 80vh;
+            transform: translate(-50%, -50%);
+            width: 760px; max-width: 95vw;
+            max-height: 90vh;
             background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff;
             border-right: 2px solid #000; border-bottom: 2px solid #000;
             padding: 3px; z-index: 9700; box-shadow: 0 0 30px rgba(0,0,0,0.8);
@@ -132,37 +134,87 @@
         }
         .chat-header {
             background: linear-gradient(90deg, #000080, #1084d0); color: white;
-            padding: 4px 8px; font-weight: bold; font-size: 12px;
+            padding: 8px 14px; font-weight: bold; font-size: 14px;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .chat-hangup { background: #cc0000; color: white; border: 1px solid #fff; padding: 2px 10px; font-size: 11px; font-weight: bold; cursor: pointer; display: none; }
+        .chat-hangup {
+            background: #cc0000; color: white; border: 1px solid #fff;
+            padding: 5px 14px; font-size: 12px; font-weight: bold; cursor: pointer; display: none;
+        }
         .chat-messages {
-            flex: 1; background: #1a1a1a; padding: 15px; overflow-y: auto;
-            max-height: 400px; min-height: 200px;
-            font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5;
+            flex: 1; background: #1a1a1a; padding: 25px 30px; overflow-y: auto;
+            max-height: 600px; min-height: 420px;
+            font-family: 'Courier New', monospace; font-size: 15px; line-height: 1.8;
+            display: flex; flex-direction: column;
         }
         .chat-msg {
-            margin-bottom: 10px; padding: 8px 12px; border-radius: 8px;
-            max-width: 85%; word-wrap: break-word; animation: msgIn 0.3s ease-out;
+            margin-bottom: 16px; padding: 14px 20px; border-radius: 10px;
+            max-width: 75%; word-wrap: break-word;
+            animation: msgIn 0.4s ease-out;
+            font-size: 15px;
+            line-height: 1.6;
         }
         @keyframes msgIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .chat-msg.unknown { background: #2a2a2a; color: #00ff00; border-left: 3px solid #ff3333; align-self: flex-start; }
-        .chat-msg.dundik { background: #000080; color: #ffffff; margin-left: auto; border-right: 3px solid #00cc00; }
-        .chat-msg.system { background: transparent; color: #ffaa00; text-align: center; font-size: 11px; border: 1px dashed #ffaa00; align-self: center; max-width: 100%; font-style: italic; }
-        .chat-msg .sender { font-size: 10px; font-weight: bold; margin-bottom: 3px; opacity: 0.8; }
+        .chat-msg.unknown {
+            background: #2a2a2a; color: #00ff00;
+            border-left: 4px solid #ff3333;
+            align-self: flex-start;
+        }
+        .chat-msg.dundik {
+            background: #000080; color: #ffffff;
+            margin-left: auto;
+            border-right: 4px solid #00cc00;
+        }
+        .chat-msg.system {
+            background: transparent; color: #ffaa00;
+            text-align: center; font-size: 13px;
+            border: 1px dashed #ffaa00;
+            align-self: center; max-width: 100%;
+            font-style: italic;
+        }
+        .chat-msg .sender {
+            font-size: 12px; font-weight: bold;
+            margin-bottom: 6px; opacity: 0.85;
+        }
         .chat-msg.dundik .sender { text-align: right; }
 
+        /* Індикатор "друкує..." */
+        .typing-indicator {
+            background: #2a2a2a;
+            color: #888;
+            border-left: 4px solid #666;
+            align-self: flex-start;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-style: italic;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .typing-indicator.show { display: block; }
+        .typing-indicator .dots::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
         .chat-options {
-            background: #c0c0c0; padding: 10px; border-top: 2px solid #808080;
-            display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto;
+            background: #c0c0c0; padding: 15px 20px; border-top: 2px solid #808080;
+            display: flex; flex-direction: column; gap: 10px;
+            max-height: 280px; overflow-y: auto;
         }
         .chat-option-btn {
             background: #c0c0c0; border-top: 2px solid #fff; border-left: 2px solid #fff;
             border-right: 2px solid #000; border-bottom: 2px solid #000;
-            padding: 8px 12px; font-size: 12px; cursor: pointer; text-align: left;
+            padding: 14px 18px; font-size: 14px; cursor: pointer; text-align: left;
             color: #000080; font-weight: bold;
         }
         .chat-option-btn:hover { background: #d0d0d0; }
@@ -339,7 +391,7 @@
         </div>
 
         <div class="top-notif" id="topNotif" onclick="handleTopNotifClick()"></div>
-        <div class="call-timer" id="callTimer">60</div>
+        <div class="call-timer" id="callTimer">30</div>
     </div>
 
     <!-- Мой компьютер -->
@@ -402,11 +454,11 @@
             <p>━━━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
             <br>
             <p><b>📄 notes_1.txt</b> <span style="color: #888;">(текст)</span></p>
-            <p style="padding: 8px 12px; background: #f8f8f8; border-left: 3px solid #008080; margin: 5px 0; line-height: 1.6;">"Помню тот день, когда мы познакомились.Как 2 бездаря общались..."</p>
+            <p style="padding: 8px 12px; background: #f8f8f8; border-left: 3px solid #008080; margin: 5px 0; line-height: 1.6;">"Помню тот день, когда мы познакомились. Как 2 бездаря общались..."</p>
             <p style="text-align: right; color: #555; font-size: 10px;">— D.</p>
             <br>
             <p><b>📄 notes_2.txt</b> <span style="color: #888;">(текст)</span></p>
-            <p style="padding: 8px 12px; background: #f8f8f8; border-left: 3px solid #008080; margin: 5px 0; line-height: 1.6;">"Юра вище тебе даже здесь"</p>
+            <p style="padding: 8px 12px; background: #f8f8f8; border-left: 3px solid #008080; margin: 5px 0; line-height: 1.6;">"Юра выше тебя даже здесь"</p>
             <p style="text-align: right; color: #555; font-size: 10px;">— D.</p>
         </div>
     </div>
@@ -660,7 +712,8 @@
         <p>НАЖМИТЕ ДЛЯ ВКЛЮЧЕНИЯ</p>
     </div>
 
-    <!-- 📦 Внешний скрипт — вся логика -->
+    <!-- 📦 Скрипти -->
     <script src="desktop.js"></script>
+    <script src="call.js"></script>
 </body>
 </html>
