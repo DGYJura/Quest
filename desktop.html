@@ -6,6 +6,36 @@
     <title>Windows 95 Desktop - Dundik Session</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif; user-select: none; }
+
+        /* ═══ 🖱️ КАСТОМНИЙ WIN95 КУРСОР ═══ */
+        html, body {
+            cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M4 2 L4 24 L9 19 L13 28 L17 26 L13 17 L21 17 Z' fill='white' stroke='black' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 4 2, auto !important;
+        }
+
+        /* Загальний курсор для всіх елементів успадковується */
+        * {
+            cursor: inherit;
+        }
+
+        /* Поля вводу — текстовий курсор */
+        input, textarea {
+            cursor: text !important;
+        }
+
+        /* Завантаження — wait */
+        body.loading, body.loading * {
+            cursor: wait !important;
+        }
+
+        /* Клікабельні елементи — той самий кастомний курсор */
+        button, .icon, .win95-btn, .start-btn, .close-btn, .chat-option-btn,
+        .settings-tab, .title-btn, .call-btn-accept, .call-btn-decline,
+        .tray, .top-notif, .chat-hangup, .power-btn {
+            cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M4 2 L4 24 L9 19 L13 28 L17 26 L13 17 L21 17 Z' fill='white' stroke='black' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 4 2, pointer !important;
+        }
+
+        /* ═══════════════════════════════════════ */
+
         body { background-color: #008080; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
         body.loading { cursor: wait; }
         body.loading #desktop { pointer-events: none; }
